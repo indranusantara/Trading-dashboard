@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Trading Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0a0c10;
+    --panel:     #0f1318;
+    --border:    #1e2530;
+    --accent:    #00d4ff;
+    --green:     #00e676;
+    --red:       #ff3d57;
+    --muted:     #4a5568;
+    --text:      #e2e8f0;
+    --subtext:   #7a8899;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘Rajdhani’, sans-serif;
+height: 100dvh;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+user-select: none;
+}
+
+/* ── Header ── */
+.header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 8px 16px;
+border-bottom: 1px solid var(–border);
+background: var(–panel);
+flex-shrink: 0;
+}
+.header-title {
+font-size: 13px;
+font-weight: 600;
+color: var(–accent);
+letter-spacing: 3px;
+text-transform: uppercase;
+}
+.header-time {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 13px;
+color: var(–subtext);
+}
+.status-dot {
+width: 8px; height: 8px;
+border-radius: 50%;
+background: var(–green);
+box-shadow: 0 0 8px var(–green);
+animation: pulse 2s infinite;
+}
+.status-dot.error { background: var(–red); box-shadow: 0 0 8px var(–red); animation: none; }
+.status-dot.connecting { background: #ffa000; box-shadow: 0 0 8px #ffa000; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── Main grid ── */
+.main {
+flex: 1;
+display: grid;
+grid-template-rows: 1fr 1fr 1fr;
+gap: 1px;
+background: var(–border);
+overflow: hidden;
+}
+
+.card {
+background: var(–panel);
+display: flex;
+flex-direction: column;
+justify-content: center;
+padding: 12px 20px;
+position: relative;
+overflow: hidden;
+}
+.card::before {
+content: ‘’;
+position: absolute;
+left: 0; top: 0; bottom: 0;
+width: 3px;
+}
+.card.es-card::before  { background: var(–accent); }
+.card.spx-card::before { background: #a78bfa; }
+.card.pl-card::before  { background: var(–green); }
+.card.pl-card.negative::before { background: var(–red); }
+
+.card-label {
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 4px;
+color: var(–subtext);
+text-transform: uppercase;
+margin-bottom: 4px;
+}
+
+.card-price {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 42px;
+font-weight: 400;
+line-height: 1;
+color: var(–text);
+letter-spacing: -1px;
+}
+
+.card-change {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-top: 6px;
+}
+.change-value {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 18px;
+font-weight: 400;
+}
+.change-pct {
+font-size: 15px;
+font-weight: 600;
+opacity: 0.8;
+}
+.positive { color: var(–green); }
+.negative { color: var(–red); }
+.neutral  { color: var(–subtext); }
+
+/* P/L specific */
+.pl-amount {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 38px;
+line-height: 1;
+letter-spacing: -1px;
+}
+.pl-meta {
+font-size: 13px;
+color: var(–subtext);
+margin-top: 4px;
+}
+
+/* Waiting state */
+.waiting {
+color: var(–muted);
+font-size: 28px;
+font-family: ‘Share Tech Mono’, monospace;
+}
+
+/* ── Login overlay ── */
+.overlay {
+position: fixed;
+inset: 0;
+background: rgba(10,12,16,0.97);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 16px;
+z-index: 100;
+padding: 24px;
+}
+.overlay.hidden { display: none; }
+.overlay-title {
+font-size: 18px;
+font-weight: 700;
+letter-spacing: 3px;
+color: var(–accent);
+text-transform: uppercase;
+text-align: center;
+}
+.overlay-sub {
+font-size: 13px;
+color: var(–subtext);
+text-align: center;
+line-height: 1.5;
+}
+.input-group {
+width: 100%;
+max-width: 320px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+input {
+width: 100%;
+background: var(–panel);
+border: 1px solid var(–border);
+border-radius: 6px;
+padding: 12px 14px;
+color: var(–text);
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 14px;
+outline: none;
+}
+input:focus { border-color: var(–accent); }
+input::placeholder { color: var(–muted); }
+button {
+width: 100%;
+max-width: 320px;
+background: var(–accent);
+color: #0a0c10;
+border: none;
+border-radius: 6px;
+padding: 13px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 16px;
+font-weight: 700;
+letter-spacing: 2px;
+text-transform: uppercase;
+cursor: pointer;
+}
+button:active { opacity: 0.8; }
+.error-msg {
+color: var(–red);
+font-size: 13px;
+text-align: center;
+min-height: 18px;
+}
+.spinner {
+width: 24px; height: 24px;
+border: 2px solid var(–border);
+border-top-color: var(–accent);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Footer ── */
+.footer {
+padding: 6px 16px;
+background: var(–panel);
+border-top: 1px solid var(–border);
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-shrink: 0;
+}
+.footer-text {
+font-size: 11px;
+color: var(–muted);
+font-family: ‘Share Tech Mono’, monospace;
+}
+.logout-btn {
+background: none;
+border: 1px solid var(–border);
+color: var(–muted);
+font-size: 10px;
+padding: 4px 10px;
+width: auto;
+border-radius: 4px;
+letter-spacing: 1px;
+}
+
+/* Flash animation on update */
+@keyframes flash { 0%{opacity:.5} 100%{opacity:1} }
+.flash { animation: flash 0.3s ease-out; }
+</style>
+
+</head>
+<body>
+
+<!-- Login Overlay -->
+
+<div class="overlay" id="overlay">
+  <div class="overlay-title">Trading Dashboard</div>
+  <div class="overlay-sub">Masukkan tastytrade credentials<br>untuk mulai streaming</div>
+  <div class="input-group">
+    <input type="text"     id="inp-secret" placeholder="Client Secret" autocomplete="off" autocorrect="off" spellcheck="false">
+    <input type="text"     id="inp-token"  placeholder="Refresh Token"  autocomplete="off" autocorrect="off" spellcheck="false">
+    <input type="text"     id="inp-acct"   placeholder="Account Number (misal: 5WU43366)" autocomplete="off">
+  </div>
+  <div class="error-msg" id="err-msg"></div>
+  <div class="spinner" id="spinner"></div>
+  <button onclick="saveAndConnect()">Connect</button>
+</div>
+
+<!-- Header -->
+
+<div class="header">
+  <div class="header-title">Market Live</div>
+  <div class="header-time" id="clock">--:--:--</div>
+  <div class="status-dot connecting" id="status-dot"></div>
+</div>
+
+<!-- Main Cards -->
+
+<div class="main">
+  <!-- ES -->
+  <div class="card es-card">
+    <div class="card-label">E-mini S&P 500 · /ES</div>
+    <div class="card-price" id="es-price"><span class="waiting">—</span></div>
+    <div class="card-change">
+      <span class="change-value neutral" id="es-change">—</span>
+      <span class="change-pct neutral"   id="es-pct">—</span>
+    </div>
+  </div>
+
+  <!-- SPX -->
+
+  <div class="card spx-card">
+    <div class="card-label">S&P 500 Index · SPX</div>
+    <div class="card-price" id="spx-price"><span class="waiting">—</span></div>
+    <div class="card-change">
+      <span class="change-value neutral" id="spx-change">—</span>
+      <span class="change-pct neutral"   id="spx-pct">—</span>
+    </div>
+  </div>
+
+  <!-- P/L -->
+
+  <div class="card pl-card" id="pl-card">
+    <div class="card-label">Open P/L · <span id="pl-acct-label">—</span></div>
+    <div class="pl-amount neutral" id="pl-amount">—</div>
+    <div class="card-change">
+      <span class="change-value neutral" id="pl-pct-val">—</span>
+      <span class="pl-meta"             id="pl-meta">—</span>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+
+<div class="footer">
+  <div class="footer-text" id="footer-updated">Not connected</div>
+  <button class="logout-btn" onclick="logout()">LOGOUT</button>
+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────────────────
+const API_BASE    = "https://api.tastyworks.com";
+const TOKEN_URL   = `${API_BASE}/oauth/token`;
+const ACCOUNTS_URL= `${API_BASE}/customers/me/accounts`;
+const SYMBOL_ES   = "/ES:XCME";
+const SYMBOL_SPX  = "SPX";
+
+// dxFeed WebSocket
+const DXLINK_WS   = "wss://tasty-openapi-ws.dxfeed.com/realtime";
+
+// ── State ────────────────────────────────────────────────────────────────────
+let accessToken   = null;
+let wsConn        = null;
+let channelSeq    = 1;
+let keepaliveTimer= null;
+let positions     = [];  // [{dx_symbol, avg_open, qty, mult, direction}]
+let optionMarks   = {};  // dx_symbol → mark
+let prevClose     = {};  // label → prev_close
+let prices        = {};  // label → {price, change, pct}
+let plData        = {};
+let posRefreshTimer = null;
+let credentials   = null;
+
+// ── Clock ────────────────────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById("clock").textContent =
+    now.toLocaleTimeString("en-US", {hour12: false});
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── Credentials storage ──────────────────────────────────────────────────────
+function loadCredentials() {
+  try {
+    const raw = localStorage.getItem("tt_creds");
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+function storeCredentials(c) {
+  localStorage.setItem("tt_creds", JSON.stringify(c));
+}
+function clearCredentials() {
+  localStorage.removeItem("tt_creds");
+}
+
+// ── Token refresh ────────────────────────────────────────────────────────────
+async function getAccessToken(clientSecret, refreshToken) {
+  const resp = await fetch(TOKEN_URL, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      grant_type:    "refresh_token",
+      refresh_token: refreshToken,
+      client_secret: clientSecret,
+    })
+  });
+  if (!resp.ok) throw new Error(`Token error: ${resp.status}`);
+  const data = await resp.json();
+  return data.access_token;
+}
+
+// ── Symbol converter (tastytrade → dxFeed) ───────────────────────────────────
+function toDxSymbol(tt) {
+  const m = tt.trim().match(/^(\w+)\s+(\d{6})([CP])(\d+)$/);
+  if (!m) return null;
+  const [,und,exp,type,straw] = m;
+  const strike = parseInt(straw) / 1000;
+  const stStr  = strike === Math.floor(strike) ? String(Math.floor(strike)) : strike.toFixed(1);
+  return `.${und}${exp}${type}${stStr}`;
+}
+
+// ── Fetch positions ──────────────────────────────────────────────────────────
+async function fetchPositions(accountNumber) {
+  const resp = await fetch(`${API_BASE}/accounts/${accountNumber}/positions`, {
+    headers: { "Authorization": `Bearer ${accessToken}` }
+  });
+  if (!resp.ok) throw new Error(`Positions error: ${resp.status}`);
+  const data = await resp.json();
+  const items = data?.data?.items || [];
+
+  positions = items.map(p => {
+    const dx = toDxSymbol(p.symbol);
+    return {
+      symbol:    p.symbol,
+      dx_symbol: dx,
+      avg_open:  parseFloat(p["average-open-price"] || 0),
+      qty:       parseFloat(p.quantity || 0),
+      mult:      parseFloat(p.multiplier || 100),
+      direction: p["quantity-direction"] === "Long" ? 1 : -1,
+    };
+  }).filter(p => p.dx_symbol);
+
+  document.getElementById("pl-acct-label").textContent = accountNumber;
+  return positions.map(p => p.dx_symbol);
+}
+
+// ── Compute P/L ──────────────────────────────────────────────────────────────
+function computePL() {
+  let totalPL   = 0;
+  let totalCost = 0;
+  let count     = 0;
+
+  for (const pos of positions) {
+    const mark = optionMarks[pos.dx_symbol];
+    if (mark == null) continue;
+    totalPL   += (mark - pos.avg_open) * pos.direction * pos.qty * pos.mult;
+    totalCost += pos.avg_open * pos.qty * pos.mult * pos.direction;
+    count++;
+  }
+
+  if (count === 0) return;
+
+  const pct = totalCost !== 0 ? (totalPL / totalCost) * 100 : 0;
+  plData = { pl: totalPL, pct, count };
+  renderPL();
+}
+
+// ── Render functions ─────────────────────────────────────────────────────────
+function fmtPrice(p)  { return p.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtMoney(p)  { return p.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function renderPrice(label, elPrice, elChange, elPct) {
+  const d = prices[label];
+  if (!d) return;
+  const cls = d.change > 0 ? "positive" : d.change < 0 ? "negative" : "neutral";
+  const arrow = d.change > 0 ? "▲" : d.change < 0 ? "▼" : "";
+  const sign  = d.change > 0 ? "+" : "";
+
+  elPrice.innerHTML = fmtPrice(d.price);
+  elChange.className = `change-value ${cls}`;
+  elChange.textContent = `${arrow} ${sign}${fmtPrice(d.change)}`;
+  elPct.className = `change-pct ${cls}`;
+  elPct.textContent = `(${sign}${d.pct.toFixed(2)}%)`;
+
+  // Flash
+  elPrice.classList.remove("flash");
+  void elPrice.offsetWidth;
+  elPrice.classList.add("flash");
+}
+
+function renderPL() {
+  if (!plData.pl == null) return;
+  const { pl, pct, count } = plData;
+  const cls   = pl >= 0 ? "positive" : "negative";
+  const arrow = pl >= 0 ? "▲" : "▼";
+  const sign  = pl >= 0 ? "+" : "";
+
+  document.getElementById("pl-amount").className  = `pl-amount ${cls}`;
+  document.getElementById("pl-amount").textContent = `${sign}$${fmtMoney(pl)}`;
+  document.getElementById("pl-pct-val").className  = `change-value ${cls}`;
+  document.getElementById("pl-pct-val").textContent= `${arrow} ${sign}${pct.toFixed(2)}%`;
+  document.getElementById("pl-meta").textContent   = `${count} positions`;
+
+  const card = document.getElementById("pl-card");
+  card.className = pl >= 0 ? "card pl-card" : "card pl-card negative";
+}
+
+function setStatus(state) {
+  const dot = document.getElementById("status-dot");
+  dot.className = `status-dot ${state}`;
+}
+
+function updateFooter() {
+  document.getElementById("footer-updated").textContent =
+    `Updated: ${new Date().toLocaleTimeString("en-US", {hour12:false})}`;
+}
+
+// ── dxFeed WebSocket ─────────────────────────────────────────────────────────
+async function connectStream(optionSymbols) {
+  if (wsConn) { try { wsConn.close(); } catch{} }
+
+  // Get streamer token
+  const resp = await fetch(`${API_BASE}/api-quote-tokens`, {
+    headers: { "Authorization": `Bearer ${accessToken}` }
+  });
+  const tokenData = await resp.json();
+  const streamerToken = tokenData?.data?.token;
+  const streamerUrl   = tokenData?.data?.["dxlink-url"] || DXLINK_WS;
+
+  const ws = new WebSocket(streamerUrl);
+  wsConn = ws;
+
+  const priceSymbols  = [SYMBOL_ES, SYMBOL_SPX];
+  const allSymbols    = [...priceSymbols, ...optionSymbols];
+
+  ws.onopen = () => {
+    setStatus("connecting");
+    ws.send(JSON.stringify({ type:"SETUP", channel:0, version:"0.1", minVersion:"0.1", keepaliveTimeout:60, acceptKeepaliveTimeout:60 }));
+  };
+
+  ws.onmessage = (evt) => {
+    const msg = JSON.parse(evt.data);
+
+    if (msg.type === "AUTH_STATE" && msg.state === "UNAUTHORIZED") {
+      ws.send(JSON.stringify({ type:"AUTH", channel:0, token: streamerToken }));
+    }
+    else if (msg.type === "AUTH_STATE" && msg.state === "AUTHORIZED") {
+      // Open channel for Quote
+      ws.send(JSON.stringify({ type:"CHANNEL_REQUEST", channel:1, service:"FEED", parameters:{ contract:"AUTO" } }));
+    }
+    else if (msg.type === "CHANNEL_OPENED" && msg.channel === 1) {
+      // Setup feed
+      ws.send(JSON.stringify({
+        type:"FEED_SETUP", channel:1,
+        acceptAggregationPeriod:0.1,
+        acceptDataFormat:"COMPACT",
+        acceptEventFields:{ Quote:["eventSymbol","bidPrice","askPrice","bidSize","askSize"] }
+      }));
+      // Subscribe all
+      ws.send(JSON.stringify({
+        type:"FEED_SUBSCRIPTION", channel:1, reset:true,
+        add: allSymbols.map(s => ({ type:"Quote", symbol:s }))
+      }));
+      // Subscribe Summary for prev_close
+      ws.send(JSON.stringify({ type:"CHANNEL_REQUEST", channel:3, service:"FEED", parameters:{ contract:"AUTO" } }));
+    }
+    else if (msg.type === "CHANNEL_OPENED" && msg.channel === 3) {
+      ws.send(JSON.stringify({
+        type:"FEED_SETUP", channel:3,
+        acceptAggregationPeriod:60,
+        acceptDataFormat:"COMPACT",
+        acceptEventFields:{ Summary:["eventSymbol","prevDayClosePrice"] }
+      }));
+      ws.send(JSON.stringify({
+        type:"FEED_SUBSCRIPTION", channel:3, reset:true,
+        add: priceSymbols.map(s => ({ type:"Summary", symbol:s }))
+      }));
+      setStatus("");  // connected
+    }
+    else if (msg.type === "FEED_DATA") {
+      const [eventType, data] = msg.data || [];
+      if (eventType === "Quote" && Array.isArray(data)) {
+        // Compact format: [sym, _, _, _, _, _, _, _, bid, ask, ...]
+        for (let i = 0; i < data.length; i += 10) {
+          const sym = data[i];
+          const bid = data[i+8];
+          const ask = data[i+9];
+          if (!sym || bid == null || ask == null) continue;
+          const mid = (bid + ask) / 2;
+          if (mid <= 0 || isNaN(mid)) continue;
+
+          if (sym === SYMBOL_ES || sym === SYMBOL_SPX) {
+            const label = sym === SYMBOL_ES ? "ES" : "SPX";
+            const pc    = prevClose[label];
+            prices[label] = {
+              price:  mid,
+              change: pc != null ? mid - pc : 0,
+              pct:    pc != null ? ((mid - pc) / pc) * 100 : 0,
+            };
+            const elPrice  = document.getElementById(`${label.toLowerCase()}-price`);
+            const elChange = document.getElementById(`${label.toLowerCase()}-change`);
+            const elPct    = document.getElementById(`${label.toLowerCase()}-pct`);
+            renderPrice(label, elPrice, elChange, elPct);
+            updateFooter();
+          } else if (sym.startsWith(".")) {
+            optionMarks[sym] = mid;
+            computePL();
+            updateFooter();
+          }
+        }
+      }
+      else if (eventType === "Summary" && Array.isArray(data)) {
+        for (let i = 0; i < data.length; i += 2) {
+          const sym = data[i];
+          const pc  = data[i+1];
+          if (!sym || !pc) continue;
+          const label = sym === SYMBOL_ES ? "ES" : "SPX";
+          prevClose[label] = pc;
+        }
+      }
+    }
+    else if (msg.type === "KEEPALIVE") {
+      ws.send(JSON.stringify({ type:"KEEPALIVE", channel:0 }));
+    }
+  };
+
+  ws.onerror = () => setStatus("error");
+  ws.onclose = () => {
+    setStatus("error");
+    setTimeout(() => reconnect(), 5000);
+  };
+}
+
+async function reconnect() {
+  if (!credentials) return;
+  try {
+    accessToken = await getAccessToken(credentials.secret, credentials.token);
+    const optSymbols = await fetchPositions(credentials.account);
+    await connectStream(optSymbols);
+  } catch(e) {
+    console.error("Reconnect failed:", e);
+    setTimeout(reconnect, 10000);
+  }
+}
+
+// ── Save & Connect ────────────────────────────────────────────────────────────
+async function saveAndConnect() {
+  const secret  = document.getElementById("inp-secret").value.trim();
+  const token   = document.getElementById("inp-token").value.trim();
+  const account = document.getElementById("inp-acct").value.trim();
+  const errEl   = document.getElementById("err-msg");
+  const spinner = document.getElementById("spinner");
+
+  if (!secret || !token || !account) {
+    errEl.textContent = "Semua field harus diisi"; return;
+  }
+
+  errEl.textContent = "";
+  spinner.style.display = "block";
+
+  try {
+    accessToken  = await getAccessToken(secret, token);
+    credentials  = { secret, token, account };
+    storeCredentials(credentials);
+
+    const optSymbols = await fetchPositions(account);
+    await connectStream(optSymbols);
+
+    // Schedule position refresh every 5 minutes
+    if (posRefreshTimer) clearInterval(posRefreshTimer);
+    posRefreshTimer = setInterval(async () => {
+      try {
+        const newSyms = await fetchPositions(account);
+        if (wsConn && wsConn.readyState === 1) {
+          wsConn.send(JSON.stringify({
+            type:"FEED_SUBSCRIPTION", channel:1, reset:false,
+            add: newSyms.map(s => ({ type:"Quote", symbol:s }))
+          }));
+        }
+      } catch(e) { console.warn("Position refresh error:", e); }
+    }, 5 * 60 * 1000);
+
+    document.getElementById("overlay").classList.add("hidden");
+  } catch(e) {
+    errEl.textContent = `Error: ${e.message}`;
+    setStatus("error");
+  } finally {
+    spinner.style.display = "none";
+  }
+}
+
+function logout() {
+  clearCredentials();
+  if (wsConn) wsConn.close();
+  if (posRefreshTimer) clearInterval(posRefreshTimer);
+  credentials = null; accessToken = null;
+  document.getElementById("overlay").classList.remove("hidden");
+  setStatus("connecting");
+}
+
+// ── Auto-connect on load ──────────────────────────────────────────────────────
+window.addEventListener("load", async () => {
+  const saved = loadCredentials();
+  if (!saved) return;
+
+  credentials = saved;
+  document.getElementById("inp-secret").value  = saved.secret;
+  document.getElementById("inp-token").value   = saved.token;
+  document.getElementById("inp-acct").value    = saved.account;
+
+  try {
+    accessToken = await getAccessToken(saved.secret, saved.token);
+    const optSyms = await fetchPositions(saved.account);
+    await connectStream(optSyms);
+    document.getElementById("overlay").classList.add("hidden");
+
+    if (posRefreshTimer) clearInterval(posRefreshTimer);
+    posRefreshTimer = setInterval(async () => {
+      try { await fetchPositions(saved.account); } catch{}
+    }, 5 * 60 * 1000);
+  } catch(e) {
+    console.error("Auto-connect failed:", e);
+    setStatus("error");
+  }
+});
+</script>
+
+</body>
+</html>
