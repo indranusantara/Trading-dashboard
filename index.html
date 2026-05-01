@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -8,550 +7,335 @@
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:        #0a0c10;
-    --panel:     #0f1318;
-    --border:    #1e2530;
-    --accent:    #00d4ff;
-    --green:     #00e676;
-    --red:       #ff3d57;
-    --muted:     #4a5568;
-    --text:      #e2e8f0;
-    --subtext:   #7a8899;
+    --bg:     #0a0c10;
+    --panel:  #0f1318;
+    --border: #1e2530;
+    --accent: #00d4ff;
+    --green:  #00e676;
+    --red:    #ff3d57;
+    --muted:  #4a5568;
+    --text:   #e2e8f0;
+    --sub:    #7a8899;
   }
-
-- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-body {
-background: var(–bg);
-color: var(–text);
-font-family: ‘Rajdhani’, sans-serif;
-height: 100dvh;
-display: flex;
-flex-direction: column;
-overflow: hidden;
-user-select: none;
-}
-
-/* ── Header ── */
-.header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 8px 16px;
-border-bottom: 1px solid var(–border);
-background: var(–panel);
-flex-shrink: 0;
-}
-.header-title {
-font-size: 13px;
-font-weight: 600;
-color: var(–accent);
-letter-spacing: 3px;
-text-transform: uppercase;
-}
-.header-time {
-font-family: ‘Share Tech Mono’, monospace;
-font-size: 13px;
-color: var(–subtext);
-}
-.status-dot {
-width: 8px; height: 8px;
-border-radius: 50%;
-background: var(–green);
-box-shadow: 0 0 8px var(–green);
-animation: pulse 2s infinite;
-}
-.status-dot.error { background: var(–red); box-shadow: 0 0 8px var(–red); animation: none; }
-.status-dot.connecting { background: #ffa000; box-shadow: 0 0 8px #ffa000; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-/* ── Main grid ── */
-.main {
-flex: 1;
-display: grid;
-grid-template-rows: 1fr 1fr 1fr;
-gap: 1px;
-background: var(–border);
-overflow: hidden;
-}
-
-.card {
-background: var(–panel);
-display: flex;
-flex-direction: column;
-justify-content: center;
-padding: 12px 20px;
-position: relative;
-overflow: hidden;
-}
-.card::before {
-content: ‘’;
-position: absolute;
-left: 0; top: 0; bottom: 0;
-width: 3px;
-}
-.card.es-card::before  { background: var(–accent); }
-.card.spx-card::before { background: #a78bfa; }
-.card.pl-card::before  { background: var(–green); }
-.card.pl-card.negative::before { background: var(–red); }
-
-.card-label {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 4px;
-color: var(–subtext);
-text-transform: uppercase;
-margin-bottom: 4px;
-}
-
-.card-price {
-font-family: ‘Share Tech Mono’, monospace;
-font-size: 42px;
-font-weight: 400;
-line-height: 1;
-color: var(–text);
-letter-spacing: -1px;
-}
-
-.card-change {
-display: flex;
-align-items: center;
-gap: 10px;
-margin-top: 6px;
-}
-.change-value {
-font-family: ‘Share Tech Mono’, monospace;
-font-size: 18px;
-font-weight: 400;
-}
-.change-pct {
-font-size: 15px;
-font-weight: 600;
-opacity: 0.8;
-}
-.positive { color: var(–green); }
-.negative { color: var(–red); }
-.neutral  { color: var(–subtext); }
-
-/* P/L specific */
-.pl-amount {
-font-family: ‘Share Tech Mono’, monospace;
-font-size: 38px;
-line-height: 1;
-letter-spacing: -1px;
-}
-.pl-meta {
-font-size: 13px;
-color: var(–subtext);
-margin-top: 4px;
-}
-
-/* Waiting state */
-.waiting {
-color: var(–muted);
-font-size: 28px;
-font-family: ‘Share Tech Mono’, monospace;
-}
-
-/* ── Login overlay ── */
-.overlay {
-position: fixed;
-inset: 0;
-background: rgba(10,12,16,0.97);
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 16px;
-z-index: 100;
-padding: 24px;
-}
-.overlay.hidden { display: none; }
-.overlay-title {
-font-size: 18px;
-font-weight: 700;
-letter-spacing: 3px;
-color: var(–accent);
-text-transform: uppercase;
-text-align: center;
-}
-.overlay-sub {
-font-size: 13px;
-color: var(–subtext);
-text-align: center;
-line-height: 1.5;
-}
-.input-group {
-width: 100%;
-max-width: 320px;
-display: flex;
-flex-direction: column;
-gap: 10px;
-}
-input {
-width: 100%;
-background: var(–panel);
-border: 1px solid var(–border);
-border-radius: 6px;
-padding: 12px 14px;
-color: var(–text);
-font-family: ‘Share Tech Mono’, monospace;
-font-size: 14px;
-outline: none;
-}
-input:focus { border-color: var(–accent); }
-input::placeholder { color: var(–muted); }
-button {
-width: 100%;
-max-width: 320px;
-background: var(–accent);
-color: #0a0c10;
-border: none;
-border-radius: 6px;
-padding: 13px;
-font-family: ‘Rajdhani’, sans-serif;
-font-size: 16px;
-font-weight: 700;
-letter-spacing: 2px;
-text-transform: uppercase;
-cursor: pointer;
-}
-button:active { opacity: 0.8; }
-.error-msg {
-color: var(–red);
-font-size: 13px;
-text-align: center;
-min-height: 18px;
-}
-.spinner {
-width: 24px; height: 24px;
-border: 2px solid var(–border);
-border-top-color: var(–accent);
-border-radius: 50%;
-animation: spin 0.8s linear infinite;
-display: none;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── Footer ── */
-.footer {
-padding: 6px 16px;
-background: var(–panel);
-border-top: 1px solid var(–border);
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-shrink: 0;
-}
-.footer-text {
-font-size: 11px;
-color: var(–muted);
-font-family: ‘Share Tech Mono’, monospace;
-}
-.logout-btn {
-background: none;
-border: 1px solid var(–border);
-color: var(–muted);
-font-size: 10px;
-padding: 4px 10px;
-width: auto;
-border-radius: 4px;
-letter-spacing: 1px;
-}
-
-/* Flash animation on update */
-@keyframes flash { 0%{opacity:.5} 100%{opacity:1} }
-.flash { animation: flash 0.3s ease-out; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Rajdhani',sans-serif;
+    height:100dvh; display:flex; flex-direction:column; overflow:hidden;
+    user-select:none;
+  }
+ 
+  /* Header */
+  .header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 16px; border-bottom:1px solid var(--border);
+    background:var(--panel); flex-shrink:0;
+  }
+  .header-title { font-size:13px; font-weight:700; color:var(--accent); letter-spacing:3px; text-transform:uppercase; }
+  .header-time  { font-family:'Share Tech Mono',monospace; font-size:13px; color:var(--sub); }
+  .dot { width:8px; height:8px; border-radius:50%; background:var(--muted); }
+  .dot.ok    { background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite; }
+  .dot.error { background:var(--red);   box-shadow:0 0 8px var(--red); }
+  .dot.wait  { background:#ffa000;      box-shadow:0 0 8px #ffa000; animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+ 
+  /* Cards */
+  .main { flex:1; display:grid; grid-template-rows:1fr 1fr 1fr; gap:1px; background:var(--border); overflow:hidden; }
+  .card {
+    background:var(--panel); display:flex; flex-direction:column;
+    justify-content:center; padding:12px 20px; position:relative; overflow:hidden;
+  }
+  .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
+  .card.es::before  { background:var(--accent); }
+  .card.spx::before { background:#a78bfa; }
+  .card.pl::before  { background:var(--green); }
+  .card.pl.neg::before { background:var(--red); }
+ 
+  .label { font-size:11px; font-weight:700; letter-spacing:4px; color:var(--sub); text-transform:uppercase; margin-bottom:4px; }
+  .price { font-family:'Share Tech Mono',monospace; font-size:42px; line-height:1; letter-spacing:-1px; }
+  .change-row { display:flex; align-items:center; gap:10px; margin-top:6px; }
+  .chg { font-family:'Share Tech Mono',monospace; font-size:18px; }
+  .pct { font-size:15px; font-weight:600; opacity:.8; }
+  .pos { color:var(--green); }
+  .neg { color:var(--red); }
+  .neu { color:var(--sub); }
+  .wait-txt { color:var(--muted); font-size:28px; font-family:'Share Tech Mono',monospace; }
+  @keyframes flash { 0%{opacity:.4} 100%{opacity:1} }
+  .flash { animation:flash .3s ease-out; }
+ 
+  /* Footer */
+  .footer {
+    padding:6px 16px; background:var(--panel); border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center; flex-shrink:0;
+  }
+  .footer-txt { font-size:11px; color:var(--muted); font-family:'Share Tech Mono',monospace; }
+  .logout-btn {
+    background:none; border:1px solid var(--border); color:var(--muted);
+    font-size:10px; padding:4px 10px; border-radius:4px; letter-spacing:1px;
+    font-family:'Rajdhani',sans-serif; font-weight:600; cursor:pointer;
+  }
+ 
+  /* Login overlay */
+  .overlay {
+    position:fixed; inset:0; background:rgba(10,12,16,.97);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; z-index:100; padding:24px;
+  }
+  .overlay.hidden { display:none; }
+  .ov-title { font-size:18px; font-weight:700; letter-spacing:3px; color:var(--accent); text-transform:uppercase; text-align:center; }
+  .ov-sub   { font-size:13px; color:var(--sub); text-align:center; line-height:1.5; }
+  .inp-grp  { width:100%; max-width:320px; display:flex; flex-direction:column; gap:10px; }
+  input {
+    width:100%; background:var(--panel); border:1px solid var(--border); border-radius:6px;
+    padding:12px 14px; color:var(--text); font-family:'Share Tech Mono',monospace;
+    font-size:13px; outline:none;
+  }
+  input:focus { border-color:var(--accent); }
+  input::placeholder { color:var(--muted); }
+  .connect-btn {
+    width:100%; max-width:320px; background:var(--accent); color:#0a0c10;
+    border:none; border-radius:6px; padding:13px;
+    font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700;
+    letter-spacing:2px; text-transform:uppercase; cursor:pointer;
+  }
+  .connect-btn:active { opacity:.8; }
+  .err { color:var(--red); font-size:13px; text-align:center; min-height:18px; }
+  .spinner {
+    width:24px; height:24px; border:2px solid var(--border);
+    border-top-color:var(--accent); border-radius:50%;
+    animation:spin .8s linear infinite; display:none;
+  }
+  @keyframes spin { to{transform:rotate(360deg)} }
 </style>
-
 </head>
 <body>
-
-<!-- Login Overlay -->
-
+ 
+<!-- Login -->
 <div class="overlay" id="overlay">
-  <div class="overlay-title">Trading Dashboard</div>
-  <div class="overlay-sub">Masukkan tastytrade credentials<br>untuk mulai streaming</div>
-  <div class="input-group">
-    <input type="text"     id="inp-secret" placeholder="Client Secret" autocomplete="off" autocorrect="off" spellcheck="false">
-    <input type="text"     id="inp-token"  placeholder="Refresh Token"  autocomplete="off" autocorrect="off" spellcheck="false">
-    <input type="text"     id="inp-acct"   placeholder="Account Number (misal: 5WU43366)" autocomplete="off">
+  <div class="ov-title">Trading Dashboard</div>
+  <div class="ov-sub">Masukkan tastytrade credentials</div>
+  <div class="inp-grp">
+    <input type="text" id="i-secret"  placeholder="Client Secret"   autocomplete="off" spellcheck="false">
+    <input type="text" id="i-token"   placeholder="Refresh Token"    autocomplete="off" spellcheck="false">
+    <input type="text" id="i-account" placeholder="Account Number"   autocomplete="off" spellcheck="false">
   </div>
-  <div class="error-msg" id="err-msg"></div>
-  <div class="spinner" id="spinner"></div>
-  <button onclick="saveAndConnect()">Connect</button>
+  <div class="err" id="err"></div>
+  <div class="spinner" id="spin"></div>
+  <button class="connect-btn" onclick="connect()">Connect</button>
 </div>
-
+ 
 <!-- Header -->
-
 <div class="header">
   <div class="header-title">Market Live</div>
   <div class="header-time" id="clock">--:--:--</div>
-  <div class="status-dot connecting" id="status-dot"></div>
+  <div class="dot wait" id="dot"></div>
 </div>
-
-<!-- Main Cards -->
-
+ 
+<!-- Cards -->
 <div class="main">
-  <!-- ES -->
-  <div class="card es-card">
-    <div class="card-label">E-mini S&P 500 · /ES</div>
-    <div class="card-price" id="es-price"><span class="waiting">—</span></div>
-    <div class="card-change">
-      <span class="change-value neutral" id="es-change">—</span>
-      <span class="change-pct neutral"   id="es-pct">—</span>
+  <div class="card es">
+    <div class="label">E-Mini S&P 500 · /ES</div>
+    <div class="price neu" id="es-p"><span class="wait-txt">—</span></div>
+    <div class="change-row">
+      <span class="chg neu" id="es-c">—</span>
+      <span class="pct neu" id="es-pct">—</span>
     </div>
   </div>
-
-  <!-- SPX -->
-
-  <div class="card spx-card">
-    <div class="card-label">S&P 500 Index · SPX</div>
-    <div class="card-price" id="spx-price"><span class="waiting">—</span></div>
-    <div class="card-change">
-      <span class="change-value neutral" id="spx-change">—</span>
-      <span class="change-pct neutral"   id="spx-pct">—</span>
+  <div class="card spx">
+    <div class="label">S&P 500 Index · SPX</div>
+    <div class="price neu" id="spx-p"><span class="wait-txt">—</span></div>
+    <div class="change-row">
+      <span class="chg neu" id="spx-c">—</span>
+      <span class="pct neu" id="spx-pct">—</span>
     </div>
   </div>
-
-  <!-- P/L -->
-
-  <div class="card pl-card" id="pl-card">
-    <div class="card-label">Open P/L · <span id="pl-acct-label">—</span></div>
-    <div class="pl-amount neutral" id="pl-amount">—</div>
-    <div class="card-change">
-      <span class="change-value neutral" id="pl-pct-val">—</span>
-      <span class="pl-meta"             id="pl-meta">—</span>
+  <div class="card pl" id="pl-card">
+    <div class="label">Open P/L · <span id="pl-acct">—</span></div>
+    <div class="price neu" id="pl-amt">—</div>
+    <div class="change-row">
+      <span class="chg neu" id="pl-pct">—</span>
+      <span class="pct neu" id="pl-meta">—</span>
     </div>
   </div>
 </div>
-
+ 
 <!-- Footer -->
-
 <div class="footer">
-  <div class="footer-text" id="footer-updated">Not connected</div>
+  <div class="footer-txt" id="footer">Not connected</div>
   <button class="logout-btn" onclick="logout()">LOGOUT</button>
 </div>
-
+ 
 <script>
-// ── Config ──────────────────────────────────────────────────────────────────
-const API_BASE    = "https://api.tastyworks.com";
-const TOKEN_URL   = `${API_BASE}/oauth/token`;
-const ACCOUNTS_URL= `${API_BASE}/customers/me/accounts`;
-const SYMBOL_ES   = "/ES:XCME";
-const SYMBOL_SPX  = "SPX";
-
-// dxFeed WebSocket
-const DXLINK_WS   = "wss://tasty-openapi-ws.dxfeed.com/realtime";
-
-// ── State ────────────────────────────────────────────────────────────────────
-let accessToken   = null;
-let wsConn        = null;
-let channelSeq    = 1;
-let keepaliveTimer= null;
-let positions     = [];  // [{dx_symbol, avg_open, qty, mult, direction}]
-let optionMarks   = {};  // dx_symbol → mark
-let prevClose     = {};  // label → prev_close
-let prices        = {};  // label → {price, change, pct}
-let plData        = {};
-let posRefreshTimer = null;
-let credentials   = null;
-
-// ── Clock ────────────────────────────────────────────────────────────────────
-function updateClock() {
-  const now = new Date();
+const API = "https://api.tastyworks.com";
+ 
+// State
+let creds = null, accessToken = null;
+let ws = null, wsChannel = 1;
+let positions = [], optMarks = {}, prevClose = {};
+let prices = { ES:{}, SPX:{} };
+let plData = {};
+let posTimer = null;
+ 
+// Clock
+setInterval(() => {
   document.getElementById("clock").textContent =
-    now.toLocaleTimeString("en-US", {hour12: false});
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// ── Credentials storage ──────────────────────────────────────────────────────
-function loadCredentials() {
-  try {
-    const raw = localStorage.getItem("tt_creds");
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
-}
-function storeCredentials(c) {
-  localStorage.setItem("tt_creds", JSON.stringify(c));
-}
-function clearCredentials() {
-  localStorage.removeItem("tt_creds");
-}
-
-// ── Token refresh ────────────────────────────────────────────────────────────
-async function getAccessToken(clientSecret, refreshToken) {
-  const resp = await fetch(TOKEN_URL, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      grant_type:    "refresh_token",
-      refresh_token: refreshToken,
-      client_secret: clientSecret,
-    })
+    new Date().toLocaleTimeString("en-US",{hour12:false});
+}, 1000);
+ 
+// Storage
+const STORE_KEY = "tt_creds_v2";
+const load = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY)); } catch{return null;} };
+const save = (c) => localStorage.setItem(STORE_KEY, JSON.stringify(c));
+const clear = () => localStorage.removeItem(STORE_KEY);
+ 
+// Token
+async function getToken(secret, refresh) {
+  const r = await fetch(`${API}/oauth/token`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ grant_type:"refresh_token", refresh_token:refresh, client_secret:secret })
   });
-  if (!resp.ok) throw new Error(`Token error: ${resp.status}`);
-  const data = await resp.json();
-  return data.access_token;
+  if (!r.ok) throw new Error(`Auth failed: ${r.status}`);
+  return (await r.json()).access_token;
 }
-
-// ── Symbol converter (tastytrade → dxFeed) ───────────────────────────────────
-function toDxSymbol(tt) {
-  const m = tt.trim().match(/^(\w+)\s+(\d{6})([CP])(\d+)$/);
+ 
+// Symbol convert
+function toDx(sym) {
+  const m = sym.trim().match(/^(\w+)\s+(\d{6})([CP])(\d+)$/);
   if (!m) return null;
-  const [,und,exp,type,straw] = m;
-  const strike = parseInt(straw) / 1000;
-  const stStr  = strike === Math.floor(strike) ? String(Math.floor(strike)) : strike.toFixed(1);
-  return `.${und}${exp}${type}${stStr}`;
+  const [,u,e,t,s] = m;
+  const strike = parseInt(s)/1000;
+  const ss = strike===Math.floor(strike) ? String(Math.floor(strike)) : strike.toFixed(1);
+  return `.${u}${e}${t}${ss}`;
 }
-
-// ── Fetch positions ──────────────────────────────────────────────────────────
-async function fetchPositions(accountNumber) {
-  const resp = await fetch(`${API_BASE}/accounts/${accountNumber}/positions`, {
-    headers: { "Authorization": `Bearer ${accessToken}` }
+ 
+// Fetch positions
+async function fetchPositions(account) {
+  const r = await fetch(`${API}/accounts/${account}/positions`, {
+    headers:{"Authorization":`Bearer ${accessToken}`}
   });
-  if (!resp.ok) throw new Error(`Positions error: ${resp.status}`);
-  const data = await resp.json();
+  if (!r.ok) throw new Error(`Positions: ${r.status}`);
+  const data = await r.json();
   const items = data?.data?.items || [];
-
-  positions = items.map(p => {
-    const dx = toDxSymbol(p.symbol);
-    return {
-      symbol:    p.symbol,
-      dx_symbol: dx,
-      avg_open:  parseFloat(p["average-open-price"] || 0),
-      qty:       parseFloat(p.quantity || 0),
-      mult:      parseFloat(p.multiplier || 100),
-      direction: p["quantity-direction"] === "Long" ? 1 : -1,
-    };
-  }).filter(p => p.dx_symbol);
-
-  document.getElementById("pl-acct-label").textContent = accountNumber;
-  return positions.map(p => p.dx_symbol);
+  positions = items.map(p => ({
+    dx: toDx(p.symbol),
+    avg: parseFloat(p["average-open-price"]||0),
+    qty: parseFloat(p.quantity||0),
+    mult: parseFloat(p.multiplier||100),
+    dir: p["quantity-direction"]==="Long" ? 1 : -1,
+  })).filter(p=>p.dx);
+  document.getElementById("pl-acct").textContent = account;
+  return positions.map(p=>p.dx);
 }
-
-// ── Compute P/L ──────────────────────────────────────────────────────────────
+ 
+// Compute P/L
 function computePL() {
-  let totalPL   = 0;
-  let totalCost = 0;
-  let count     = 0;
-
-  for (const pos of positions) {
-    const mark = optionMarks[pos.dx_symbol];
-    if (mark == null) continue;
-    totalPL   += (mark - pos.avg_open) * pos.direction * pos.qty * pos.mult;
-    totalCost += pos.avg_open * pos.qty * pos.mult * pos.direction;
-    count++;
+  let pl=0, cost=0, n=0;
+  for (const p of positions) {
+    const m = optMarks[p.dx];
+    if (m==null) continue;
+    pl   += (m - p.avg) * p.dir * p.qty * p.mult;
+    cost += p.avg * p.qty * p.mult * p.dir;
+    n++;
   }
-
-  if (count === 0) return;
-
-  const pct = totalCost !== 0 ? (totalPL / totalCost) * 100 : 0;
-  plData = { pl: totalPL, pct, count };
+  if (!n) return;
+  plData = { pl, pct: cost ? (pl/cost)*100 : 0, n };
   renderPL();
 }
-
-// ── Render functions ─────────────────────────────────────────────────────────
-function fmtPrice(p)  { return p.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); }
-function fmtMoney(p)  { return p.toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); }
-
-function renderPrice(label, elPrice, elChange, elPct) {
-  const d = prices[label];
-  if (!d) return;
-  const cls = d.change > 0 ? "positive" : d.change < 0 ? "negative" : "neutral";
-  const arrow = d.change > 0 ? "▲" : d.change < 0 ? "▼" : "";
-  const sign  = d.change > 0 ? "+" : "";
-
-  elPrice.innerHTML = fmtPrice(d.price);
-  elChange.className = `change-value ${cls}`;
-  elChange.textContent = `${arrow} ${sign}${fmtPrice(d.change)}`;
-  elPct.className = `change-pct ${cls}`;
-  elPct.textContent = `(${sign}${d.pct.toFixed(2)}%)`;
-
-  // Flash
-  elPrice.classList.remove("flash");
-  void elPrice.offsetWidth;
-  elPrice.classList.add("flash");
+ 
+// Render
+function fp(v) { return v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+ 
+function renderTicker(label) {
+  const d = prices[label]; if (!d?.price) return;
+  const pre  = label.toLowerCase();
+  const cls  = d.chg>0?"pos":d.chg<0?"neg":"neu";
+  const arr  = d.chg>0?"▲":d.chg<0?"▼":"";
+  const sign = d.chg>0?"+":"";
+  const elP  = document.getElementById(`${pre}-p`);
+  elP.className = `price ${cls}`;
+  elP.textContent = fp(d.price);
+  elP.classList.remove("flash"); void elP.offsetWidth; elP.classList.add("flash");
+  const elC = document.getElementById(`${pre}-c`);
+  elC.className = `chg ${cls}`;
+  elC.textContent = `${arr} ${sign}${fp(d.chg||0)}`;
+  const elPct = document.getElementById(`${pre}-pct`);
+  elPct.className = `pct ${cls}`;
+  elPct.textContent = `(${sign}${(d.pct||0).toFixed(2)}%)`;
 }
-
+ 
 function renderPL() {
-  if (!plData.pl == null) return;
-  const { pl, pct, count } = plData;
-  const cls   = pl >= 0 ? "positive" : "negative";
-  const arrow = pl >= 0 ? "▲" : "▼";
-  const sign  = pl >= 0 ? "+" : "";
-
-  document.getElementById("pl-amount").className  = `pl-amount ${cls}`;
-  document.getElementById("pl-amount").textContent = `${sign}$${fmtMoney(pl)}`;
-  document.getElementById("pl-pct-val").className  = `change-value ${cls}`;
-  document.getElementById("pl-pct-val").textContent= `${arrow} ${sign}${pct.toFixed(2)}%`;
-  document.getElementById("pl-meta").textContent   = `${count} positions`;
-
-  const card = document.getElementById("pl-card");
-  card.className = pl >= 0 ? "card pl-card" : "card pl-card negative";
+  if (!plData.pl && plData.pl!==0) return;
+  const {pl,pct,n} = plData;
+  const cls  = pl>=0?"pos":"neg";
+  const arr  = pl>=0?"▲":"▼";
+  const sign = pl>=0?"+":"";
+  document.getElementById("pl-amt").className = `price ${cls}`;
+  document.getElementById("pl-amt").textContent = `${sign}$${fp(pl)}`;
+  document.getElementById("pl-pct").className = `chg ${cls}`;
+  document.getElementById("pl-pct").textContent = `${arr} ${sign}${pct.toFixed(2)}%`;
+  document.getElementById("pl-meta").textContent = `${n} positions`;
+  document.getElementById("pl-card").className = `card pl${pl<0?" neg":""}`;
 }
-
-function setStatus(state) {
-  const dot = document.getElementById("status-dot");
-  dot.className = `status-dot ${state}`;
-}
-
+ 
+function setDot(s) { document.getElementById("dot").className = `dot ${s}`; }
+ 
 function updateFooter() {
-  document.getElementById("footer-updated").textContent =
-    `Updated: ${new Date().toLocaleTimeString("en-US", {hour12:false})}`;
+  document.getElementById("footer").textContent =
+    `Updated: ${new Date().toLocaleTimeString("en-US",{hour12:false})}`;
 }
-
-// ── dxFeed WebSocket ─────────────────────────────────────────────────────────
-async function connectStream(optionSymbols) {
-  if (wsConn) { try { wsConn.close(); } catch{} }
-
+ 
+// dxFeed stream
+async function startStream(optSyms) {
+  if (ws) { try{ws.close();}catch{} }
+ 
   // Get streamer token
-  const resp = await fetch(`${API_BASE}/api-quote-tokens`, {
-    headers: { "Authorization": `Bearer ${accessToken}` }
+  const r = await fetch(`${API}/api-quote-tokens`, {
+    headers:{"Authorization":`Bearer ${accessToken}`}
   });
-  const tokenData = await resp.json();
-  const streamerToken = tokenData?.data?.token;
-  const streamerUrl   = tokenData?.data?.["dxlink-url"] || DXLINK_WS;
-
-  const ws = new WebSocket(streamerUrl);
-  wsConn = ws;
-
-  const priceSymbols  = [SYMBOL_ES, SYMBOL_SPX];
-  const allSymbols    = [...priceSymbols, ...optionSymbols];
-
+  const td = await r.json();
+  const stok = td?.data?.token;
+  const surl = td?.data?.["dxlink-url"] || "wss://tasty-openapi-ws.dxfeed.com/realtime";
+ 
+  const priceSyms = ["/ES:XCME","SPX"];
+  const allSyms   = [...priceSyms, ...optSyms];
+ 
+  ws = new WebSocket(surl);
+ 
   ws.onopen = () => {
-    setStatus("connecting");
-    ws.send(JSON.stringify({ type:"SETUP", channel:0, version:"0.1", minVersion:"0.1", keepaliveTimeout:60, acceptKeepaliveTimeout:60 }));
+    setDot("wait");
+    ws.send(JSON.stringify({
+      type:"SETUP", channel:0, version:"0.1", minVersion:"0.1",
+      keepaliveTimeout:60, acceptKeepaliveTimeout:60
+    }));
   };
-
-  ws.onmessage = (evt) => {
-    const msg = JSON.parse(evt.data);
-
-    if (msg.type === "AUTH_STATE" && msg.state === "UNAUTHORIZED") {
-      ws.send(JSON.stringify({ type:"AUTH", channel:0, token: streamerToken }));
+ 
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    const t = msg.type;
+ 
+    if (t==="AUTH_STATE" && msg.state==="UNAUTHORIZED") {
+      ws.send(JSON.stringify({type:"AUTH", channel:0, token:stok}));
     }
-    else if (msg.type === "AUTH_STATE" && msg.state === "AUTHORIZED") {
-      // Open channel for Quote
-      ws.send(JSON.stringify({ type:"CHANNEL_REQUEST", channel:1, service:"FEED", parameters:{ contract:"AUTO" } }));
+    else if (t==="AUTH_STATE" && msg.state==="AUTHORIZED") {
+      // Quote channel
+      ws.send(JSON.stringify({type:"CHANNEL_REQUEST", channel:1, service:"FEED", parameters:{contract:"AUTO"}}));
+      // Summary channel
+      ws.send(JSON.stringify({type:"CHANNEL_REQUEST", channel:3, service:"FEED", parameters:{contract:"AUTO"}}));
     }
-    else if (msg.type === "CHANNEL_OPENED" && msg.channel === 1) {
-      // Setup feed
+    else if (t==="CHANNEL_OPENED" && msg.channel===1) {
       ws.send(JSON.stringify({
         type:"FEED_SETUP", channel:1,
-        acceptAggregationPeriod:0.1,
+        acceptAggregationPeriod:0.5,
         acceptDataFormat:"COMPACT",
-        acceptEventFields:{ Quote:["eventSymbol","bidPrice","askPrice","bidSize","askSize"] }
+        acceptEventFields:{ Quote:["eventSymbol","bidPrice","askPrice"] }
       }));
-      // Subscribe all
       ws.send(JSON.stringify({
         type:"FEED_SUBSCRIPTION", channel:1, reset:true,
-        add: allSymbols.map(s => ({ type:"Quote", symbol:s }))
+        add: allSyms.map(s=>({type:"Quote",symbol:s}))
       }));
-      // Subscribe Summary for prev_close
-      ws.send(JSON.stringify({ type:"CHANNEL_REQUEST", channel:3, service:"FEED", parameters:{ contract:"AUTO" } }));
     }
-    else if (msg.type === "CHANNEL_OPENED" && msg.channel === 3) {
+    else if (t==="CHANNEL_OPENED" && msg.channel===3) {
       ws.send(JSON.stringify({
         type:"FEED_SETUP", channel:3,
         acceptAggregationPeriod:60,
@@ -560,157 +344,145 @@ async function connectStream(optionSymbols) {
       }));
       ws.send(JSON.stringify({
         type:"FEED_SUBSCRIPTION", channel:3, reset:true,
-        add: priceSymbols.map(s => ({ type:"Summary", symbol:s }))
+        add: priceSyms.map(s=>({type:"Summary",symbol:s}))
       }));
-      setStatus("");  // connected
+      setDot("ok");
     }
-    else if (msg.type === "FEED_DATA") {
-      const [eventType, data] = msg.data || [];
-      if (eventType === "Quote" && Array.isArray(data)) {
-        // Compact format: [sym, _, _, _, _, _, _, _, bid, ask, ...]
-        for (let i = 0; i < data.length; i += 10) {
-          const sym = data[i];
-          const bid = data[i+8];
-          const ask = data[i+9];
-          if (!sym || bid == null || ask == null) continue;
-          const mid = (bid + ask) / 2;
-          if (mid <= 0 || isNaN(mid)) continue;
-
-          if (sym === SYMBOL_ES || sym === SYMBOL_SPX) {
-            const label = sym === SYMBOL_ES ? "ES" : "SPX";
-            const pc    = prevClose[label];
-            prices[label] = {
-              price:  mid,
-              change: pc != null ? mid - pc : 0,
-              pct:    pc != null ? ((mid - pc) / pc) * 100 : 0,
+    else if (t==="FEED_DATA") {
+      const [evtType, data] = msg.data || [];
+      if (!Array.isArray(data)) return;
+ 
+      if (evtType==="Quote") {
+        // Compact: [sym, bid, ask, sym, bid, ask, ...]
+        for (let i=0; i<data.length; i+=3) {
+          const sym=data[i], bid=data[i+1], ask=data[i+2];
+          if (!sym||bid==null||ask==null) continue;
+          const mid=(parseFloat(bid)+parseFloat(ask))/2;
+          if (!mid||isNaN(mid)||mid<=0) continue;
+ 
+          if (sym==="/ES:XCME"||sym==="SPX") {
+            const lbl = sym==="/ES:XCME"?"ES":"SPX";
+            const pc  = prevClose[lbl];
+            prices[lbl] = {
+              price: mid,
+              chg:   pc ? mid-pc : 0,
+              pct:   pc ? ((mid-pc)/pc)*100 : 0,
             };
-            const elPrice  = document.getElementById(`${label.toLowerCase()}-price`);
-            const elChange = document.getElementById(`${label.toLowerCase()}-change`);
-            const elPct    = document.getElementById(`${label.toLowerCase()}-pct`);
-            renderPrice(label, elPrice, elChange, elPct);
+            renderTicker(lbl);
             updateFooter();
           } else if (sym.startsWith(".")) {
-            optionMarks[sym] = mid;
+            optMarks[sym] = mid;
             computePL();
             updateFooter();
           }
         }
       }
-      else if (eventType === "Summary" && Array.isArray(data)) {
-        for (let i = 0; i < data.length; i += 2) {
-          const sym = data[i];
-          const pc  = data[i+1];
-          if (!sym || !pc) continue;
-          const label = sym === SYMBOL_ES ? "ES" : "SPX";
-          prevClose[label] = pc;
+      else if (evtType==="Summary") {
+        for (let i=0; i<data.length; i+=2) {
+          const sym=data[i], pc=parseFloat(data[i+1]);
+          if (!sym||!pc) continue;
+          const lbl = sym==="/ES:XCME"?"ES":"SPX";
+          prevClose[lbl] = pc;
         }
       }
     }
-    else if (msg.type === "KEEPALIVE") {
-      ws.send(JSON.stringify({ type:"KEEPALIVE", channel:0 }));
+    else if (t==="KEEPALIVE") {
+      ws.send(JSON.stringify({type:"KEEPALIVE",channel:0}));
     }
   };
-
-  ws.onerror = () => setStatus("error");
+ 
+  ws.onerror = () => setDot("error");
   ws.onclose = () => {
-    setStatus("error");
-    setTimeout(() => reconnect(), 5000);
+    setDot("error");
+    setTimeout(reconnect, 8000);
   };
 }
-
+ 
 async function reconnect() {
-  if (!credentials) return;
+  if (!creds) return;
   try {
-    accessToken = await getAccessToken(credentials.secret, credentials.token);
-    const optSymbols = await fetchPositions(credentials.account);
-    await connectStream(optSymbols);
+    accessToken = await getToken(creds.secret, creds.token);
+    const optSyms = await fetchPositions(creds.account);
+    await startStream(optSyms);
   } catch(e) {
     console.error("Reconnect failed:", e);
-    setTimeout(reconnect, 10000);
+    setTimeout(reconnect, 15000);
   }
 }
-
-// ── Save & Connect ────────────────────────────────────────────────────────────
-async function saveAndConnect() {
-  const secret  = document.getElementById("inp-secret").value.trim();
-  const token   = document.getElementById("inp-token").value.trim();
-  const account = document.getElementById("inp-acct").value.trim();
-  const errEl   = document.getElementById("err-msg");
-  const spinner = document.getElementById("spinner");
-
-  if (!secret || !token || !account) {
-    errEl.textContent = "Semua field harus diisi"; return;
-  }
-
-  errEl.textContent = "";
-  spinner.style.display = "block";
-
+ 
+// Connect
+async function connect() {
+  const secret  = document.getElementById("i-secret").value.trim();
+  const token   = document.getElementById("i-token").value.trim();
+  const account = document.getElementById("i-account").value.trim();
+  const errEl   = document.getElementById("err");
+  const spin    = document.getElementById("spin");
+ 
+  if (!secret||!token||!account) { errEl.textContent="Semua field wajib diisi"; return; }
+  errEl.textContent=""; spin.style.display="block";
+ 
   try {
-    accessToken  = await getAccessToken(secret, token);
-    credentials  = { secret, token, account };
-    storeCredentials(credentials);
-
-    const optSymbols = await fetchPositions(account);
-    await connectStream(optSymbols);
-
-    // Schedule position refresh every 5 minutes
-    if (posRefreshTimer) clearInterval(posRefreshTimer);
-    posRefreshTimer = setInterval(async () => {
+    accessToken = await getToken(secret, token);
+    creds = {secret, token, account};
+    save(creds);
+ 
+    const optSyms = await fetchPositions(account);
+    await startStream(optSyms);
+ 
+    // Refresh positions every 5 min
+    if (posTimer) clearInterval(posTimer);
+    posTimer = setInterval(async () => {
       try {
-        const newSyms = await fetchPositions(account);
-        if (wsConn && wsConn.readyState === 1) {
-          wsConn.send(JSON.stringify({
+        const syms = await fetchPositions(account);
+        if (ws?.readyState===1) {
+          ws.send(JSON.stringify({
             type:"FEED_SUBSCRIPTION", channel:1, reset:false,
-            add: newSyms.map(s => ({ type:"Quote", symbol:s }))
+            add: syms.map(s=>({type:"Quote",symbol:s}))
           }));
         }
-      } catch(e) { console.warn("Position refresh error:", e); }
-    }, 5 * 60 * 1000);
-
+      } catch(e) { console.warn("Pos refresh:", e); }
+    }, 5*60*1000);
+ 
     document.getElementById("overlay").classList.add("hidden");
   } catch(e) {
     errEl.textContent = `Error: ${e.message}`;
-    setStatus("error");
+    setDot("error");
   } finally {
-    spinner.style.display = "none";
+    spin.style.display="none";
   }
 }
-
+ 
 function logout() {
-  clearCredentials();
-  if (wsConn) wsConn.close();
-  if (posRefreshTimer) clearInterval(posRefreshTimer);
-  credentials = null; accessToken = null;
+  clear();
+  if (ws) ws.close();
+  if (posTimer) clearInterval(posTimer);
+  creds=null; accessToken=null;
   document.getElementById("overlay").classList.remove("hidden");
-  setStatus("connecting");
+  setDot("wait");
 }
-
-// ── Auto-connect on load ──────────────────────────────────────────────────────
+ 
+// Auto-connect
 window.addEventListener("load", async () => {
-  const saved = loadCredentials();
+  const saved = load();
   if (!saved) return;
-
-  credentials = saved;
-  document.getElementById("inp-secret").value  = saved.secret;
-  document.getElementById("inp-token").value   = saved.token;
-  document.getElementById("inp-acct").value    = saved.account;
-
+  creds = saved;
+  document.getElementById("i-secret").value  = saved.secret;
+  document.getElementById("i-token").value   = saved.token;
+  document.getElementById("i-account").value = saved.account;
   try {
-    accessToken = await getAccessToken(saved.secret, saved.token);
+    accessToken = await getToken(saved.secret, saved.token);
     const optSyms = await fetchPositions(saved.account);
-    await connectStream(optSyms);
+    await startStream(optSyms);
     document.getElementById("overlay").classList.add("hidden");
-
-    if (posRefreshTimer) clearInterval(posRefreshTimer);
-    posRefreshTimer = setInterval(async () => {
+    if (posTimer) clearInterval(posTimer);
+    posTimer = setInterval(async () => {
       try { await fetchPositions(saved.account); } catch{}
-    }, 5 * 60 * 1000);
+    }, 5*60*1000);
   } catch(e) {
-    console.error("Auto-connect failed:", e);
-    setStatus("error");
+    console.error("Auto-connect:", e);
+    setDot("error");
   }
 });
 </script>
-
 </body>
 </html>
