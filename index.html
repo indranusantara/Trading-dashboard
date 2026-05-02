@@ -81,11 +81,11 @@
   }
   .chg {
     font-family:'Share Tech Mono',monospace;
-    font-size:20px; line-height:1; font-weight:400;
+    font-size:26px; line-height:1; font-weight:400;
   }
   .pct {
     font-family:'Rajdhani',sans-serif;
-    font-size:18px; font-weight:600; line-height:1;
+    font-size:22px; font-weight:600; line-height:1;
     opacity:.85;
   }
   .pos { color:var(--green); }
@@ -308,9 +308,7 @@ function renderTicker(label){
   const d=prices[label]; if(!d?.price) return;
   const pre=label.toLowerCase();
   const isVix=label==="VIX";
-  // VIX: rising = bad (red), falling = good (green) — invert color
-  const chgForColor = isVix ? -d.chg : d.chg;
-  const cls=chgForColor>0?"pos":chgForColor<0?"neg":"neu";
+  const cls=d.chg>0?"pos":d.chg<0?"neg":"neu";
   const arr=d.chg>0?"▲":d.chg<0?"▼":"";
   const sign=d.chg>0?"+":"";
  
