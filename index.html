@@ -17,6 +17,7 @@
     --muted:  #4a5568;
     --text:   #e2e8f0;
     --sub:    #7a8899;
+    --vix:    #ffa000;
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body {
@@ -29,50 +30,83 @@
   /* Header */
   .header {
     display:flex; align-items:center; justify-content:space-between;
-    padding:8px 16px; border-bottom:1px solid var(--border);
-    background:var(--panel); flex-shrink:0;
+    padding:5px 12px; border-bottom:1px solid var(--border);
+    background:var(--panel); flex-shrink:0; height:32px;
   }
-  .header-title { font-size:13px; font-weight:700; color:var(--accent); letter-spacing:3px; text-transform:uppercase; }
-  .header-time  { font-family:'Share Tech Mono',monospace; font-size:13px; color:var(--sub); }
-  .dot { width:8px; height:8px; border-radius:50%; background:var(--muted); }
-  .dot.ok    { background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite; }
-  .dot.error { background:var(--red);   box-shadow:0 0 8px var(--red); }
-  .dot.wait  { background:#ffa000;      box-shadow:0 0 8px #ffa000; animation:pulse 1s infinite; }
+  .header-title { font-size:11px; font-weight:700; color:var(--accent); letter-spacing:3px; text-transform:uppercase; }
+  .header-time  { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--sub); }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--muted); }
+  .dot.ok    { background:var(--green); box-shadow:0 0 6px var(--green); animation:pulse 2s infinite; }
+  .dot.error { background:var(--red);   box-shadow:0 0 6px var(--red); }
+  .dot.wait  { background:#ffa000;      box-shadow:0 0 6px #ffa000; animation:pulse 1s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
  
-  /* Cards */
-  .main { flex:1; display:grid; grid-template-rows:1fr 1fr 1fr; gap:1px; background:var(--border); overflow:hidden; }
+  /* Main grid — 4 rows */
+  .main { flex:1; display:grid; grid-template-rows:1fr 1fr 1fr 1fr; gap:1px; background:var(--border); overflow:hidden; }
+ 
+  /* Card layout: label top-left, price bottom-left, change+pct right column */
   .card {
-    background:var(--panel); display:flex; flex-direction:column;
-    justify-content:center; padding:12px 20px; position:relative; overflow:hidden;
+    background:var(--panel);
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-rows:auto 1fr;
+    padding:6px 12px;
+    position:relative;
+    overflow:hidden;
+    align-items:center;
+    gap:0 12px;
   }
   .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
-  .card.es::before  { background:var(--accent); }
-  .card.spx::before { background:#a78bfa; }
-  .card.pl::before  { background:var(--green); }
+  .card.es::before   { background:var(--accent); }
+  .card.spx::before  { background:#a78bfa; }
+  .card.vix::before  { background:var(--vix); }
+  .card.pl::before   { background:var(--green); }
   .card.pl.neg::before { background:var(--red); }
  
-  .label { font-size:11px; font-weight:700; letter-spacing:4px; color:var(--sub); text-transform:uppercase; margin-bottom:4px; }
-  .price { font-family:'Share Tech Mono',monospace; font-size:42px; line-height:1; letter-spacing:-1px; }
-  .change-row { display:flex; align-items:center; gap:10px; margin-top:6px; }
-  .chg { font-family:'Share Tech Mono',monospace; font-size:18px; }
-  .pct { font-size:15px; font-weight:600; opacity:.8; }
+  /* Left side */
+  .card-left { display:flex; flex-direction:column; justify-content:center; gap:2px; }
+  .label { font-size:16px; font-weight:700; letter-spacing:2px; color:var(--sub); text-transform:uppercase; line-height:1; }
+  .price {
+    font-family:'Share Tech Mono',monospace;
+    font-size:36px; line-height:1; letter-spacing:-1px;
+    color:var(--text);
+  }
+  .price.pos { color:var(--green); }
+  .price.neg { color:var(--red); }
+ 
+  /* Right side — change & pct stacked */
+  .card-right {
+    display:flex; flex-direction:column; align-items:flex-end; justify-content:center;
+    gap:4px; min-width:120px;
+  }
+  .chg {
+    font-family:'Share Tech Mono',monospace;
+    font-size:20px; line-height:1; font-weight:400;
+  }
+  .pct {
+    font-family:'Rajdhani',sans-serif;
+    font-size:18px; font-weight:600; line-height:1;
+    opacity:.85;
+  }
   .pos { color:var(--green); }
   .neg { color:var(--red); }
   .neu { color:var(--sub); }
-  .wait-txt { color:var(--muted); font-size:28px; font-family:'Share Tech Mono',monospace; }
-  @keyframes flash { 0%{opacity:.4} 100%{opacity:1} }
-  .flash { animation:flash .3s ease-out; }
+  .vix-color { color:var(--vix); }
+ 
+  .wait-txt { color:var(--muted); font-size:28px; }
+ 
+  @keyframes flash { 0%{opacity:.3} 100%{opacity:1} }
+  .flash { animation:flash .25s ease-out; }
  
   /* Footer */
   .footer {
-    padding:6px 16px; background:var(--panel); border-top:1px solid var(--border);
-    display:flex; justify-content:space-between; align-items:center; flex-shrink:0;
+    padding:4px 12px; background:var(--panel); border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center; flex-shrink:0; height:26px;
   }
-  .footer-txt { font-size:11px; color:var(--muted); font-family:'Share Tech Mono',monospace; }
+  .footer-txt { font-size:10px; color:var(--muted); font-family:'Share Tech Mono',monospace; }
   .logout-btn {
     background:none; border:1px solid var(--border); color:var(--muted);
-    font-size:10px; padding:4px 10px; border-radius:4px; letter-spacing:1px;
+    font-size:9px; padding:2px 8px; border-radius:3px; letter-spacing:1px;
     font-family:'Rajdhani',sans-serif; font-weight:600; cursor:pointer;
   }
  
@@ -80,29 +114,28 @@
   .overlay {
     position:fixed; inset:0; background:rgba(10,12,16,.97);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:14px; z-index:100; padding:24px;
+    gap:12px; z-index:100; padding:20px;
   }
   .overlay.hidden { display:none; }
-  .ov-title { font-size:18px; font-weight:700; letter-spacing:3px; color:var(--accent); text-transform:uppercase; text-align:center; }
-  .ov-sub   { font-size:13px; color:var(--sub); text-align:center; line-height:1.5; }
-  .inp-grp  { width:100%; max-width:320px; display:flex; flex-direction:column; gap:10px; }
+  .ov-title { font-size:16px; font-weight:700; letter-spacing:3px; color:var(--accent); text-transform:uppercase; }
+  .ov-sub   { font-size:12px; color:var(--sub); text-align:center; line-height:1.5; }
+  .inp-grp  { width:100%; max-width:300px; display:flex; flex-direction:column; gap:8px; }
   input {
-    width:100%; background:var(--panel); border:1px solid var(--border); border-radius:6px;
-    padding:12px 14px; color:var(--text); font-family:'Share Tech Mono',monospace;
-    font-size:13px; outline:none;
+    width:100%; background:var(--panel); border:1px solid var(--border); border-radius:5px;
+    padding:10px 12px; color:var(--text); font-family:'Share Tech Mono',monospace;
+    font-size:12px; outline:none;
   }
   input:focus { border-color:var(--accent); }
   input::placeholder { color:var(--muted); }
   .connect-btn {
-    width:100%; max-width:320px; background:var(--accent); color:#0a0c10;
-    border:none; border-radius:6px; padding:13px;
-    font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700;
+    width:100%; max-width:300px; background:var(--accent); color:#0a0c10;
+    border:none; border-radius:5px; padding:11px;
+    font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:700;
     letter-spacing:2px; text-transform:uppercase; cursor:pointer;
   }
-  .connect-btn:active { opacity:.8; }
-  .err { color:var(--red); font-size:13px; text-align:center; min-height:18px; }
+  .err { color:var(--red); font-size:12px; text-align:center; min-height:16px; }
   .spinner {
-    width:24px; height:24px; border:2px solid var(--border);
+    width:20px; height:20px; border:2px solid var(--border);
     border-top-color:var(--accent); border-radius:50%;
     animation:spin .8s linear infinite; display:none;
   }
@@ -134,30 +167,55 @@
  
 <!-- Cards -->
 <div class="main">
+ 
+  <!-- ES -->
   <div class="card es">
-    <div class="label">E-Mini S&P 500 · /ES</div>
-    <div class="price neu" id="es-p"><span class="wait-txt">—</span></div>
-    <div class="change-row">
+    <div class="card-left">
+      <div class="label">ES</div>
+      <div class="price neu" id="es-p"><span class="wait-txt">—</span></div>
+    </div>
+    <div class="card-right">
       <span class="chg neu" id="es-c">—</span>
       <span class="pct neu" id="es-pct">—</span>
     </div>
   </div>
+ 
+  <!-- SPX -->
   <div class="card spx">
-    <div class="label">S&P 500 Index · SPX</div>
-    <div class="price neu" id="spx-p"><span class="wait-txt">—</span></div>
-    <div class="change-row">
+    <div class="card-left">
+      <div class="label">SPX</div>
+      <div class="price neu" id="spx-p"><span class="wait-txt">—</span></div>
+    </div>
+    <div class="card-right">
       <span class="chg neu" id="spx-c">—</span>
       <span class="pct neu" id="spx-pct">—</span>
     </div>
   </div>
+ 
+  <!-- VIX -->
+  <div class="card vix">
+    <div class="card-left">
+      <div class="label" style="color:var(--vix)">VIX</div>
+      <div class="price neu" id="vix-p"><span class="wait-txt">—</span></div>
+    </div>
+    <div class="card-right">
+      <span class="chg neu" id="vix-c">—</span>
+      <span class="pct neu" id="vix-pct">—</span>
+    </div>
+  </div>
+ 
+  <!-- P/L -->
   <div class="card pl" id="pl-card">
-    <div class="label">Open P/L · <span id="pl-acct">—</span></div>
-    <div class="price neu" id="pl-amt">—</div>
-    <div class="change-row">
+    <div class="card-left">
+      <div class="label" style="color:var(--sub)">P/L · <span id="pl-acct" style="font-size:12px">—</span></div>
+      <div class="price neu" id="pl-amt">—</div>
+    </div>
+    <div class="card-right">
       <span class="chg neu" id="pl-pct">—</span>
       <span class="pct neu" id="pl-meta">—</span>
     </div>
   </div>
+ 
 </div>
  
 <!-- Footer -->
@@ -169,320 +227,287 @@
 <script>
 const API = "https://api.tastyworks.com";
  
-// State
-let creds = null, accessToken = null;
-let ws = null, wsChannel = 1;
-let positions = [], optMarks = {}, prevClose = {};
-let prices = { ES:{}, SPX:{} };
-let plData = {};
-let posTimer = null;
+let creds=null, accessToken=null;
+let ws=null;
+let positions=[], optMarks={}, prevClose={};
+let prices={ ES:{}, SPX:{}, VIX:{} };
+let plData={};
+let posTimer=null;
  
 // Clock
-setInterval(() => {
-  document.getElementById("clock").textContent =
+setInterval(()=>{
+  document.getElementById("clock").textContent=
     new Date().toLocaleTimeString("en-US",{hour12:false});
-}, 1000);
+},1000);
  
 // Storage
-const STORE_KEY = "tt_creds_v2";
-const load = () => { try { return JSON.parse(localStorage.getItem(STORE_KEY)); } catch{return null;} };
-const save = (c) => localStorage.setItem(STORE_KEY, JSON.stringify(c));
-const clear = () => localStorage.removeItem(STORE_KEY);
+const STORE_KEY="tt_creds_v3";
+const load=()=>{ try{return JSON.parse(localStorage.getItem(STORE_KEY));}catch{return null;} };
+const save=(c)=>localStorage.setItem(STORE_KEY,JSON.stringify(c));
+const clear=()=>localStorage.removeItem(STORE_KEY);
  
 // Token
-async function getToken(secret, refresh) {
-  const r = await fetch(`${API}/oauth/token`, {
+async function getToken(secret,refresh){
+  const r=await fetch(`${API}/oauth/token`,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ grant_type:"refresh_token", refresh_token:refresh, client_secret:secret })
+    body:JSON.stringify({grant_type:"refresh_token",refresh_token:refresh,client_secret:secret})
   });
-  if (!r.ok) throw new Error(`Auth failed: ${r.status}`);
+  if(!r.ok) throw new Error(`Auth failed: ${r.status}`);
   return (await r.json()).access_token;
 }
  
 // Symbol convert
-function toDx(sym) {
-  const m = sym.trim().match(/^(\w+)\s+(\d{6})([CP])(\d+)$/);
-  if (!m) return null;
-  const [,u,e,t,s] = m;
-  const strike = parseInt(s)/1000;
-  const ss = strike===Math.floor(strike) ? String(Math.floor(strike)) : strike.toFixed(1);
+function toDx(sym){
+  const m=sym.trim().match(/^(\w+)\s+(\d{6})([CP])(\d+)$/);
+  if(!m) return null;
+  const[,u,e,t,s]=m;
+  const strike=parseInt(s)/1000;
+  const ss=strike===Math.floor(strike)?String(Math.floor(strike)):strike.toFixed(1);
   return `.${u}${e}${t}${ss}`;
 }
  
 // Fetch positions
-async function fetchPositions(account) {
-  const r = await fetch(`${API}/accounts/${account}/positions`, {
+async function fetchPositions(account){
+  const r=await fetch(`${API}/accounts/${account}/positions`,{
     headers:{"Authorization":`Bearer ${accessToken}`}
   });
-  if (!r.ok) throw new Error(`Positions: ${r.status}`);
-  const data = await r.json();
-  const items = data?.data?.items || [];
-  positions = items.map(p => ({
-    dx: toDx(p.symbol),
-    avg: parseFloat(p["average-open-price"]||0),
-    qty: parseFloat(p.quantity||0),
-    mult: parseFloat(p.multiplier||100),
-    dir: p["quantity-direction"]==="Long" ? 1 : -1,
+  if(!r.ok) throw new Error(`Positions: ${r.status}`);
+  const data=await r.json();
+  const items=data?.data?.items||[];
+  positions=items.map(p=>({
+    dx:toDx(p.symbol),
+    avg:parseFloat(p["average-open-price"]||0),
+    qty:parseFloat(p.quantity||0),
+    mult:parseFloat(p.multiplier||100),
+    dir:p["quantity-direction"]==="Long"?1:-1,
   })).filter(p=>p.dx);
-  document.getElementById("pl-acct").textContent = account;
+  document.getElementById("pl-acct").textContent=account;
   return positions.map(p=>p.dx);
 }
  
 // Compute P/L
-function computePL() {
-  let pl=0, cost=0, n=0;
-  for (const p of positions) {
-    const m = optMarks[p.dx];
-    if (m==null) continue;
-    pl   += (m - p.avg) * p.dir * p.qty * p.mult;
-    cost += p.avg * p.qty * p.mult * p.dir;
+function computePL(){
+  let pl=0,cost=0,n=0;
+  for(const p of positions){
+    const m=optMarks[p.dx];
+    if(m==null) continue;
+    pl+=(m-p.avg)*p.dir*p.qty*p.mult;
+    cost+=p.avg*p.qty*p.mult*p.dir;
     n++;
   }
-  if (!n) return;
-  plData = { pl, pct: cost ? (pl/cost)*100 : 0, n };
+  if(!n) return;
+  plData={pl,pct:cost?(pl/cost)*100:0,n};
   renderPL();
 }
  
 // Render
-function fp(v) { return v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fp(v){return v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
  
-function renderTicker(label) {
-  const d = prices[label]; if (!d?.price) return;
-  const pre  = label.toLowerCase();
-  const cls  = d.chg>0?"pos":d.chg<0?"neg":"neu";
-  const arr  = d.chg>0?"▲":d.chg<0?"▼":"";
-  const sign = d.chg>0?"+":"";
-  const elP  = document.getElementById(`${pre}-p`);
-  elP.className = `price ${cls}`;
-  elP.textContent = fp(d.price);
+function renderTicker(label){
+  const d=prices[label]; if(!d?.price) return;
+  const pre=label.toLowerCase();
+  const isVix=label==="VIX";
+  // VIX: rising = bad (red), falling = good (green) — invert color
+  const chgForColor = isVix ? -d.chg : d.chg;
+  const cls=chgForColor>0?"pos":chgForColor<0?"neg":"neu";
+  const arr=d.chg>0?"▲":d.chg<0?"▼":"";
+  const sign=d.chg>0?"+":"";
+ 
+  const elP=document.getElementById(`${pre}-p`);
+  elP.className=`price ${isVix?"vix-color":cls}`;
+  elP.textContent=fp(d.price);
   elP.classList.remove("flash"); void elP.offsetWidth; elP.classList.add("flash");
-  const elC = document.getElementById(`${pre}-c`);
-  elC.className = `chg ${cls}`;
-  elC.textContent = `${arr} ${sign}${fp(d.chg||0)}`;
-  const elPct = document.getElementById(`${pre}-pct`);
-  elPct.className = `pct ${cls}`;
-  elPct.textContent = `(${sign}${(d.pct||0).toFixed(2)}%)`;
+ 
+  const elC=document.getElementById(`${pre}-c`);
+  elC.className=`chg ${cls}`;
+  elC.textContent=`${arr} ${sign}${fp(d.chg||0)}`;
+ 
+  const elPct=document.getElementById(`${pre}-pct`);
+  elPct.className=`pct ${cls}`;
+  elPct.textContent=`${sign}${(d.pct||0).toFixed(2)}%`;
 }
  
-function renderPL() {
-  if (!plData.pl && plData.pl!==0) return;
-  const {pl,pct,n} = plData;
-  const cls  = pl>=0?"pos":"neg";
-  const arr  = pl>=0?"▲":"▼";
-  const sign = pl>=0?"+":"";
-  document.getElementById("pl-amt").className = `price ${cls}`;
-  document.getElementById("pl-amt").textContent = `${sign}$${fp(pl)}`;
-  document.getElementById("pl-pct").className = `chg ${cls}`;
-  document.getElementById("pl-pct").textContent = `${arr} ${sign}${pct.toFixed(2)}%`;
-  document.getElementById("pl-meta").textContent = `${n} positions`;
-  document.getElementById("pl-card").className = `card pl${pl<0?" neg":""}`;
+function renderPL(){
+  if(plData.pl==null) return;
+  const{pl,pct,n}=plData;
+  const cls=pl>=0?"pos":"neg";
+  const arr=pl>=0?"▲":"▼";
+  const sign=pl>=0?"+":"";
+  document.getElementById("pl-amt").className=`price ${cls}`;
+  document.getElementById("pl-amt").textContent=`${sign}$${fp(pl)}`;
+  document.getElementById("pl-pct").className=`chg ${cls}`;
+  document.getElementById("pl-pct").textContent=`${arr} ${sign}${pct.toFixed(2)}%`;
+  document.getElementById("pl-meta").textContent=`${n} pos`;
+  document.getElementById("pl-card").className=`card pl${pl<0?" neg":""}`;
 }
  
-function setDot(s) { document.getElementById("dot").className = `dot ${s}`; }
- 
-function updateFooter() {
-  document.getElementById("footer").textContent =
+function setDot(s){document.getElementById("dot").className=`dot ${s}`;}
+function updateFooter(){
+  document.getElementById("footer").textContent=
     `Updated: ${new Date().toLocaleTimeString("en-US",{hour12:false})}`;
 }
  
-// dxFeed stream
-async function startStream(optSyms) {
-  if (ws) { try{ws.close();}catch{} }
+// Stream
+async function startStream(optSyms){
+  if(ws){try{ws.close();}catch{}}
  
-  // Get streamer token
-  const r = await fetch(`${API}/api-quote-tokens`, {
+  const r=await fetch(`${API}/api-quote-tokens`,{
     headers:{"Authorization":`Bearer ${accessToken}`}
   });
-  const td = await r.json();
-  const stok = td?.data?.token;
-  const surl = td?.data?.["dxlink-url"] || "wss://tasty-openapi-ws.dxfeed.com/realtime";
+  const td=await r.json();
+  const stok=td?.data?.token;
+  const surl=td?.data?.["dxlink-url"]||"wss://tasty-openapi-ws.dxfeed.com/realtime";
  
-  const priceSyms = ["/ES:XCME","SPX"];
-  const allSyms   = [...priceSyms, ...optSyms];
+  const priceSyms=["/ES:XCME","SPX","VIX"];
+  const allSyms=[...priceSyms,...optSyms];
  
-  ws = new WebSocket(surl);
+  ws=new WebSocket(surl);
  
-  ws.onopen = () => {
+  ws.onopen=()=>{
     setDot("wait");
-    ws.send(JSON.stringify({
-      type:"SETUP", channel:0, version:"0.1", minVersion:"0.1",
-      keepaliveTimeout:60, acceptKeepaliveTimeout:60
-    }));
+    ws.send(JSON.stringify({type:"SETUP",channel:0,version:"0.1",minVersion:"0.1",keepaliveTimeout:60,acceptKeepaliveTimeout:60}));
   };
  
-  ws.onmessage = (e) => {
-    const msg = JSON.parse(e.data);
-    const t = msg.type;
+  ws.onmessage=(e)=>{
+    const msg=JSON.parse(e.data);
+    const t=msg.type;
  
-    if (t==="AUTH_STATE" && msg.state==="UNAUTHORIZED") {
-      ws.send(JSON.stringify({type:"AUTH", channel:0, token:stok}));
+    if(t==="AUTH_STATE"&&msg.state==="UNAUTHORIZED"){
+      ws.send(JSON.stringify({type:"AUTH",channel:0,token:stok}));
     }
-    else if (t==="AUTH_STATE" && msg.state==="AUTHORIZED") {
-      // Quote channel
-      ws.send(JSON.stringify({type:"CHANNEL_REQUEST", channel:1, service:"FEED", parameters:{contract:"AUTO"}}));
-      // Summary channel
-      ws.send(JSON.stringify({type:"CHANNEL_REQUEST", channel:3, service:"FEED", parameters:{contract:"AUTO"}}));
+    else if(t==="AUTH_STATE"&&msg.state==="AUTHORIZED"){
+      ws.send(JSON.stringify({type:"CHANNEL_REQUEST",channel:1,service:"FEED",parameters:{contract:"AUTO"}}));
+      ws.send(JSON.stringify({type:"CHANNEL_REQUEST",channel:3,service:"FEED",parameters:{contract:"AUTO"}}));
     }
-    else if (t==="CHANNEL_OPENED" && msg.channel===1) {
+    else if(t==="CHANNEL_OPENED"&&msg.channel===1){
       ws.send(JSON.stringify({
-        type:"FEED_SETUP", channel:1,
+        type:"FEED_SETUP",channel:1,
         acceptAggregationPeriod:0.5,
         acceptDataFormat:"COMPACT",
-        acceptEventFields:{ Quote:["eventSymbol","bidPrice","askPrice"] }
+        acceptEventFields:{Quote:["eventSymbol","bidPrice","askPrice"]}
       }));
       ws.send(JSON.stringify({
-        type:"FEED_SUBSCRIPTION", channel:1, reset:true,
-        add: allSyms.map(s=>({type:"Quote",symbol:s}))
+        type:"FEED_SUBSCRIPTION",channel:1,reset:true,
+        add:allSyms.map(s=>({type:"Quote",symbol:s}))
       }));
     }
-    else if (t==="CHANNEL_OPENED" && msg.channel===3) {
+    else if(t==="CHANNEL_OPENED"&&msg.channel===3){
       ws.send(JSON.stringify({
-        type:"FEED_SETUP", channel:3,
+        type:"FEED_SETUP",channel:3,
         acceptAggregationPeriod:60,
         acceptDataFormat:"COMPACT",
-        acceptEventFields:{ Summary:["eventSymbol","prevDayClosePrice"] }
+        acceptEventFields:{Summary:["eventSymbol","prevDayClosePrice"]}
       }));
       ws.send(JSON.stringify({
-        type:"FEED_SUBSCRIPTION", channel:3, reset:true,
-        add: priceSyms.map(s=>({type:"Summary",symbol:s}))
+        type:"FEED_SUBSCRIPTION",channel:3,reset:true,
+        add:priceSyms.map(s=>({type:"Summary",symbol:s}))
       }));
       setDot("ok");
     }
-    else if (t==="FEED_DATA") {
-      const [evtType, data] = msg.data || [];
-      if (!Array.isArray(data)) return;
+    else if(t==="FEED_DATA"){
+      const[evtType,data]=msg.data||[];
+      if(!Array.isArray(data)) return;
  
-      if (evtType==="Quote") {
-        // Compact: [sym, bid, ask, sym, bid, ask, ...]
-        for (let i=0; i<data.length; i+=3) {
-          const sym=data[i], bid=data[i+1], ask=data[i+2];
-          if (!sym||bid==null||ask==null) continue;
+      if(evtType==="Quote"){
+        for(let i=0;i<data.length;i+=3){
+          const sym=data[i],bid=data[i+1],ask=data[i+2];
+          if(!sym||bid==null||ask==null) continue;
           const mid=(parseFloat(bid)+parseFloat(ask))/2;
-          if (!mid||isNaN(mid)||mid<=0) continue;
+          if(!mid||isNaN(mid)||mid<=0) continue;
  
-          if (sym==="/ES:XCME"||sym==="SPX") {
-            const lbl = sym==="/ES:XCME"?"ES":"SPX";
-            const pc  = prevClose[lbl];
-            prices[lbl] = {
-              price: mid,
-              chg:   pc ? mid-pc : 0,
-              pct:   pc ? ((mid-pc)/pc)*100 : 0,
-            };
+          const symMap={"/ES:XCME":"ES","SPX":"SPX","VIX":"VIX"};
+          if(symMap[sym]){
+            const lbl=symMap[sym];
+            const pc=prevClose[lbl];
+            prices[lbl]={price:mid,chg:pc?mid-pc:0,pct:pc?((mid-pc)/pc)*100:0};
             renderTicker(lbl);
             updateFooter();
-          } else if (sym.startsWith(".")) {
-            optMarks[sym] = mid;
+          } else if(sym.startsWith(".")){
+            optMarks[sym]=mid;
             computePL();
             updateFooter();
           }
         }
       }
-      else if (evtType==="Summary") {
-        for (let i=0; i<data.length; i+=2) {
-          const sym=data[i], pc=parseFloat(data[i+1]);
-          if (!sym||!pc) continue;
-          const lbl = sym==="/ES:XCME"?"ES":"SPX";
-          prevClose[lbl] = pc;
+      else if(evtType==="Summary"){
+        for(let i=0;i<data.length;i+=2){
+          const sym=data[i],pc=parseFloat(data[i+1]);
+          if(!sym||!pc) continue;
+          const symMap={"/ES:XCME":"ES","SPX":"SPX","VIX":"VIX"};
+          if(symMap[sym]) prevClose[symMap[sym]]=pc;
         }
       }
     }
-    else if (t==="KEEPALIVE") {
+    else if(t==="KEEPALIVE"){
       ws.send(JSON.stringify({type:"KEEPALIVE",channel:0}));
     }
   };
  
-  ws.onerror = () => setDot("error");
-  ws.onclose = () => {
-    setDot("error");
-    setTimeout(reconnect, 8000);
-  };
+  ws.onerror=()=>setDot("error");
+  ws.onclose=()=>{ setDot("error"); setTimeout(reconnect,8000); };
 }
  
-async function reconnect() {
-  if (!creds) return;
-  try {
-    accessToken = await getToken(creds.secret, creds.token);
-    const optSyms = await fetchPositions(creds.account);
+async function reconnect(){
+  if(!creds) return;
+  try{
+    accessToken=await getToken(creds.secret,creds.token);
+    const optSyms=await fetchPositions(creds.account);
     await startStream(optSyms);
-  } catch(e) {
-    console.error("Reconnect failed:", e);
-    setTimeout(reconnect, 15000);
-  }
+  }catch(e){ console.error("Reconnect:",e); setTimeout(reconnect,15000); }
 }
  
-// Connect
-async function connect() {
-  const secret  = document.getElementById("i-secret").value.trim();
-  const token   = document.getElementById("i-token").value.trim();
-  const account = document.getElementById("i-account").value.trim();
-  const errEl   = document.getElementById("err");
-  const spin    = document.getElementById("spin");
- 
-  if (!secret||!token||!account) { errEl.textContent="Semua field wajib diisi"; return; }
+async function connect(){
+  const secret=document.getElementById("i-secret").value.trim();
+  const token=document.getElementById("i-token").value.trim();
+  const account=document.getElementById("i-account").value.trim();
+  const errEl=document.getElementById("err");
+  const spin=document.getElementById("spin");
+  if(!secret||!token||!account){errEl.textContent="Semua field wajib diisi";return;}
   errEl.textContent=""; spin.style.display="block";
- 
-  try {
-    accessToken = await getToken(secret, token);
-    creds = {secret, token, account};
+  try{
+    accessToken=await getToken(secret,token);
+    creds={secret,token,account};
     save(creds);
- 
-    const optSyms = await fetchPositions(account);
+    const optSyms=await fetchPositions(account);
     await startStream(optSyms);
- 
-    // Refresh positions every 5 min
-    if (posTimer) clearInterval(posTimer);
-    posTimer = setInterval(async () => {
-      try {
-        const syms = await fetchPositions(account);
-        if (ws?.readyState===1) {
-          ws.send(JSON.stringify({
-            type:"FEED_SUBSCRIPTION", channel:1, reset:false,
-            add: syms.map(s=>({type:"Quote",symbol:s}))
-          }));
-        }
-      } catch(e) { console.warn("Pos refresh:", e); }
-    }, 5*60*1000);
- 
+    if(posTimer) clearInterval(posTimer);
+    posTimer=setInterval(async()=>{
+      try{ const syms=await fetchPositions(account);
+        if(ws?.readyState===1) ws.send(JSON.stringify({type:"FEED_SUBSCRIPTION",channel:1,reset:false,add:syms.map(s=>({type:"Quote",symbol:s}))}));
+      }catch(e){console.warn("Pos refresh:",e);}
+    },5*60*1000);
     document.getElementById("overlay").classList.add("hidden");
-  } catch(e) {
-    errEl.textContent = `Error: ${e.message}`;
+  }catch(e){
+    errEl.textContent=`Error: ${e.message}`;
     setDot("error");
-  } finally {
-    spin.style.display="none";
-  }
+  }finally{ spin.style.display="none"; }
 }
  
-function logout() {
+function logout(){
   clear();
-  if (ws) ws.close();
-  if (posTimer) clearInterval(posTimer);
+  if(ws) ws.close();
+  if(posTimer) clearInterval(posTimer);
   creds=null; accessToken=null;
   document.getElementById("overlay").classList.remove("hidden");
   setDot("wait");
 }
  
-// Auto-connect
-window.addEventListener("load", async () => {
-  const saved = load();
-  if (!saved) return;
-  creds = saved;
-  document.getElementById("i-secret").value  = saved.secret;
-  document.getElementById("i-token").value   = saved.token;
-  document.getElementById("i-account").value = saved.account;
-  try {
-    accessToken = await getToken(saved.secret, saved.token);
-    const optSyms = await fetchPositions(saved.account);
+window.addEventListener("load",async()=>{
+  const saved=load();
+  if(!saved) return;
+  creds=saved;
+  document.getElementById("i-secret").value=saved.secret;
+  document.getElementById("i-token").value=saved.token;
+  document.getElementById("i-account").value=saved.account;
+  try{
+    accessToken=await getToken(saved.secret,saved.token);
+    const optSyms=await fetchPositions(saved.account);
     await startStream(optSyms);
     document.getElementById("overlay").classList.add("hidden");
-    if (posTimer) clearInterval(posTimer);
-    posTimer = setInterval(async () => {
-      try { await fetchPositions(saved.account); } catch{}
-    }, 5*60*1000);
-  } catch(e) {
-    console.error("Auto-connect:", e);
-    setDot("error");
-  }
+    if(posTimer) clearInterval(posTimer);
+    posTimer=setInterval(async()=>{try{await fetchPositions(saved.account);}catch{}},5*60*1000);
+  }catch(e){ console.error("Auto-connect:",e); setDot("error"); }
 });
 </script>
 </body>
