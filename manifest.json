@@ -1,0 +1,22 @@
+{
+  "name": "Trading Dashboard",
+  "short_name": "Trading",
+  "description": "Realtime ES, SPX & P/L Monitor",
+  "start_url": "/Trading-dashboard/",
+  "display": "standalone",
+  "background_color": "#0a0c10",
+  "theme_color": "#00d4ff",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "https://indranusantara.github.io/Trading-dashboard/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://indranusantara.github.io/Trading-dashboard/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
