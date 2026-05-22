@@ -8,143 +8,76 @@
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:     #0a0c10;
-    --panel:  #0f1318;
-    --border: #1e2530;
-    --accent: #00d4ff;
-    --green:  #00e676;
-    --red:    #ff3d57;
-    --muted:  #4a5568;
-    --text:   #e2e8f0;
-    --sub:    #7a8899;
-    --vix:    #ffa000;
+    --bg:#0a0c10;--panel:#0f1318;--border:#1e2530;--accent:#00d4ff;
+    --green:#00e676;--red:#ff3d57;--muted:#4a5568;--text:#e2e8f0;
+    --sub:#7a8899;--vx:#ffa000;
   }
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body {
-    background:var(--bg); color:var(--text);
-    font-family:'Rajdhani',sans-serif;
-    height:100dvh; display:flex; flex-direction:column; overflow:hidden;
-    user-select:none;
-  }
- 
-  /* Header */
-  .header {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:5px 12px; border-bottom:1px solid var(--border);
-    background:var(--panel); flex-shrink:0; height:32px;
-  }
-  .header-title { font-size:11px; font-weight:700; color:var(--accent); letter-spacing:3px; text-transform:uppercase; }
-  .header-time  { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--sub); }
-  .dot { width:7px; height:7px; border-radius:50%; background:var(--muted); }
-  .dot.ok    { background:var(--green); box-shadow:0 0 6px var(--green); animation:pulse 2s infinite; }
-  .dot.error { background:var(--red);   box-shadow:0 0 6px var(--red); }
-  .dot.wait  { background:#ffa000;      box-shadow:0 0 6px #ffa000; animation:pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
- 
-  /* Main grid — 4 rows */
-  .main { flex:1; display:grid; grid-template-rows:1fr 1fr 1fr 1fr; gap:1px; background:var(--border); overflow:hidden; }
- 
-  /* Card layout: label top-left, price bottom-left, change+pct right column */
-  .card {
-    background:var(--panel);
-    display:grid;
-    grid-template-columns:1fr auto;
-    grid-template-rows:auto 1fr;
-    padding:6px 12px;
-    position:relative;
-    overflow:hidden;
-    align-items:center;
-    gap:0 12px;
-  }
-  .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
-  .card.es::before   { background:var(--accent); }
-  .card.spx::before  { background:#a78bfa; }
-  .card.vix::before  { background:var(--vix); }
-  .card.pl::before   { background:var(--green); }
-  .card.pl.neg::before { background:var(--red); }
- 
-  /* Left side */
-  .card-left { display:flex; flex-direction:column; justify-content:center; gap:2px; }
-  .label { font-size:16px; font-weight:700; letter-spacing:2px; color:var(--sub); text-transform:uppercase; line-height:1; }
-  .price {
-    font-family:'Share Tech Mono',monospace;
-    font-size:36px; line-height:1; letter-spacing:-1px;
-    color:var(--text);
-  }
-  .price.pos { color:var(--green); }
-  .price.neg { color:var(--red); }
- 
-  /* Right side — change & pct stacked */
-  .card-right {
-    display:flex; flex-direction:column; align-items:flex-end; justify-content:center;
-    gap:4px; min-width:120px;
-  }
-  .chg {
-    font-family:'Share Tech Mono',monospace;
-    font-size:26px; line-height:1; font-weight:400;
-  }
-  .pct {
-    font-family:'Rajdhani',sans-serif;
-    font-size:22px; font-weight:600; line-height:1;
-    opacity:.85;
-  }
-  .pos { color:var(--green); }
-  .neg { color:var(--red); }
-  .neu { color:var(--sub); }
-  .vix-color { color:var(--vix); }
- 
-  .wait-txt { color:var(--muted); font-size:28px; }
- 
-  @keyframes flash { 0%{opacity:.3} 100%{opacity:1} }
-  .flash { animation:flash .25s ease-out; }
- 
-  /* Footer */
-  .footer {
-    padding:4px 12px; background:var(--panel); border-top:1px solid var(--border);
-    display:flex; justify-content:space-between; align-items:center; flex-shrink:0; height:26px;
-  }
-  .footer-txt { font-size:10px; color:var(--muted); font-family:'Share Tech Mono',monospace; }
-  .logout-btn {
-    background:none; border:1px solid var(--border); color:var(--muted);
-    font-size:9px; padding:2px 8px; border-radius:3px; letter-spacing:1px;
-    font-family:'Rajdhani',sans-serif; font-weight:600; cursor:pointer;
-  }
- 
-  /* Login overlay */
-  .overlay {
-    position:fixed; inset:0; background:rgba(10,12,16,.97);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:12px; z-index:100; padding:20px;
-  }
-  .overlay.hidden { display:none; }
-  .ov-title { font-size:16px; font-weight:700; letter-spacing:3px; color:var(--accent); text-transform:uppercase; }
-  .ov-sub   { font-size:12px; color:var(--sub); text-align:center; line-height:1.5; }
-  .inp-grp  { width:100%; max-width:300px; display:flex; flex-direction:column; gap:8px; }
-  input {
-    width:100%; background:var(--panel); border:1px solid var(--border); border-radius:5px;
-    padding:10px 12px; color:var(--text); font-family:'Share Tech Mono',monospace;
-    font-size:12px; outline:none;
-  }
-  input:focus { border-color:var(--accent); }
-  input::placeholder { color:var(--muted); }
-  .connect-btn {
-    width:100%; max-width:300px; background:var(--accent); color:#0a0c10;
-    border:none; border-radius:5px; padding:11px;
-    font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:700;
-    letter-spacing:2px; text-transform:uppercase; cursor:pointer;
-  }
-  .err { color:var(--red); font-size:12px; text-align:center; min-height:16px; }
-  .spinner {
-    width:20px; height:20px; border:2px solid var(--border);
-    border-top-color:var(--accent); border-radius:50%;
-    animation:spin .8s linear infinite; display:none;
-  }
-  @keyframes spin { to{transform:rotate(360deg)} }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;
+    height:100dvh;display:flex;flex-direction:column;overflow:hidden;user-select:none;}
+  .header{display:flex;align-items:center;justify-content:space-between;
+    padding:5px 12px;border-bottom:1px solid var(--border);
+    background:var(--panel);flex-shrink:0;height:32px;}
+  .header-title{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:3px;text-transform:uppercase;}
+  .header-time{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--sub);}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+  .dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;}
+  .dot.error{background:var(--red);box-shadow:0 0 6px var(--red);}
+  .dot.wait{background:#ffa000;box-shadow:0 0 6px #ffa000;animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .main{flex:1;display:grid;grid-template-rows:1fr 1fr 1fr 1fr;gap:1px;background:var(--border);overflow:hidden;}
+  .card{background:var(--panel);display:grid;grid-template-columns:1fr auto;
+    padding:6px 12px;position:relative;overflow:hidden;align-items:center;gap:0 12px;}
+  .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+  .card.spx::before{background:#a78bfa;}
+  .card.es::before{background:var(--accent);}
+  .card.vx::before{background:var(--vx);}
+  .card.pl::before{background:var(--green);}
+  .card.pl.neg::before{background:var(--red);}
+  .card-left{display:flex;flex-direction:column;justify-content:center;gap:2px;}
+  .label{font-size:16px;font-weight:700;letter-spacing:2px;color:var(--sub);text-transform:uppercase;line-height:1;}
+  .price{font-family:'Share Tech Mono',monospace;font-size:36px;line-height:1;letter-spacing:-1px;color:var(--text);}
+  .card-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;min-width:120px;}
+  .chg{font-family:'Share Tech Mono',monospace;font-size:20px;line-height:1;}
+  .pct{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;line-height:1;opacity:.85;}
+  .pl-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+  .pl-row{font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1;}
+  .pl-tag{font-size:10px;letter-spacing:1px;opacity:.6;}
+  .pos{color:var(--green);}
+  .neg{color:var(--red);}
+  .neu{color:var(--sub);}
+  .vx-color{color:var(--vx);}
+  .wait-txt{color:var(--muted);font-size:28px;}
+  @keyframes flash{0%{opacity:.3}100%{opacity:1}}
+  .flash{animation:flash .25s ease-out;}
+  .footer{padding:4px 12px;background:var(--panel);border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;flex-shrink:0;height:26px;}
+  .footer-txt{font-size:10px;color:var(--muted);font-family:'Share Tech Mono',monospace;}
+  .logout-btn{background:none;border:1px solid var(--border);color:var(--muted);
+    font-size:9px;padding:2px 8px;border-radius:3px;letter-spacing:1px;
+    font-family:'Rajdhani',sans-serif;font-weight:600;cursor:pointer;}
+  .overlay{position:fixed;inset:0;background:rgba(10,12,16,.97);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:12px;z-index:100;padding:20px;}
+  .overlay.hidden{display:none;}
+  .ov-title{font-size:16px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;}
+  .ov-sub{font-size:12px;color:var(--sub);text-align:center;line-height:1.5;}
+  .inp-grp{width:100%;max-width:300px;display:flex;flex-direction:column;gap:8px;}
+  input{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:5px;
+    padding:10px 12px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:12px;outline:none;}
+  input:focus{border-color:var(--accent);}
+  input::placeholder{color:var(--muted);}
+  .connect-btn{width:100%;max-width:300px;background:var(--accent);color:#0a0c10;
+    border:none;border-radius:5px;padding:11px;font-family:'Rajdhani',sans-serif;
+    font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;}
+  .err{color:var(--red);font-size:12px;text-align:center;min-height:16px;}
+  .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);
+    border-radius:50%;animation:spin .8s linear infinite;display:none;}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
- 
-<!-- Login -->
+
 <div class="overlay" id="overlay">
   <div class="ov-title">Trading Dashboard</div>
   <div class="ov-sub">Masukkan tastytrade credentials</div>
@@ -157,29 +90,14 @@
   <div class="spinner" id="spin"></div>
   <button class="connect-btn" onclick="connect()">Connect</button>
 </div>
- 
-<!-- Header -->
+
 <div class="header">
   <div class="header-title">Market Live</div>
   <div class="header-time" id="clock">--:--:--</div>
   <div class="dot wait" id="dot"></div>
 </div>
- 
-<!-- Cards -->
+
 <div class="main">
- 
-  <!-- ES -->
-  <div class="card es">
-    <div class="card-left">
-      <div class="label">ES</div>
-      <div class="price neu" id="es-p"><span class="wait-txt">—</span></div>
-    </div>
-    <div class="card-right">
-      <span class="chg neu" id="es-c">—</span>
-      <span class="pct neu" id="es-pct">—</span>
-    </div>
-  </div>
- 
   <!-- SPX -->
   <div class="card spx">
     <div class="card-left">
@@ -191,73 +109,77 @@
       <span class="pct neu" id="spx-pct">—</span>
     </div>
   </div>
- 
-  <!-- VIX -->
-  <div class="card vix">
+  <!-- ES -->
+  <div class="card es">
     <div class="card-left">
-      <div class="label" style="color:var(--vix)">VIX</div>
-      <div class="price neu" id="vix-p"><span class="wait-txt">—</span></div>
+      <div class="label">ES</div>
+      <div class="price neu" id="es-p"><span class="wait-txt">—</span></div>
     </div>
     <div class="card-right">
-      <span class="chg neu" id="vix-c">—</span>
-      <span class="pct neu" id="vix-pct">—</span>
+      <span class="chg neu" id="es-c">—</span>
+      <span class="pct neu" id="es-pct">—</span>
     </div>
   </div>
- 
+  <!-- /VX -->
+  <div class="card vx">
+    <div class="card-left">
+      <div class="label" style="color:var(--vx)">/VX</div>
+      <div class="price neu" id="vx-p"><span class="wait-txt">—</span></div>
+    </div>
+    <div class="card-right">
+      <span class="chg neu" id="vx-c">—</span>
+      <span class="pct neu" id="vx-pct">—</span>
+    </div>
+  </div>
   <!-- P/L -->
   <div class="card pl" id="pl-card">
     <div class="card-left">
       <div class="label" style="color:var(--sub)">P/L · <span id="pl-acct" style="font-size:12px">—</span></div>
       <div class="price neu" id="pl-amt">—</div>
     </div>
-    <div class="card-right">
-      <span class="chg neu" id="pl-pct">—</span>
-      <span class="pct neu" id="pl-meta">—</span>
+    <div class="pl-right" id="pl-right">
+      <div class="pl-row neu" id="pl-prem">—</div>
+      <div class="pl-tag">prem%</div>
+      <div class="pl-row neu" id="pl-bp">—</div>
+      <div class="pl-tag">bp%</div>
     </div>
   </div>
- 
 </div>
- 
-<!-- Footer -->
+
 <div class="footer">
   <div class="footer-txt" id="footer">Not connected</div>
   <button class="logout-btn" onclick="logout()">LOGOUT</button>
 </div>
- 
+
 <script>
-const API = "https://api.tastyworks.com";
- 
-let creds=null, accessToken=null;
-let ws=null;
-let positions=[], optMarks={}, prevClose={};
-let prices={ ES:{}, SPX:{}, VIX:{} };
-let plData={};
+const API="https://api.tastyworks.com";
+let creds=null,accessToken=null,ws=null;
+let positions=[],optMarks={},prevClose={};
+let prices={SPX:{},ES:{},VX:{}};
+let plData={},usedBP=0;
 let posTimer=null;
- 
-// Clock
+
+// Symbol map — /VX:XCFE for VIX futures
+const PRICE_SYMS={"/ES:XCME":"ES","SPX":"SPX","/VX:XCFE":"VX"};
+
 setInterval(()=>{
   document.getElementById("clock").textContent=
     new Date().toLocaleTimeString("en-US",{hour12:false});
 },1000);
- 
-// Storage
+
 const STORE_KEY="tt_creds_v3";
-const load=()=>{ try{return JSON.parse(localStorage.getItem(STORE_KEY));}catch{return null;} };
+const load=()=>{try{return JSON.parse(localStorage.getItem(STORE_KEY));}catch{return null;}};
 const save=(c)=>localStorage.setItem(STORE_KEY,JSON.stringify(c));
 const clear=()=>localStorage.removeItem(STORE_KEY);
- 
-// Token
+
 async function getToken(secret,refresh){
-  const r=await fetch(`${API}/oauth/token`,{
-    method:"POST",
+  const r=await fetch(`${API}/oauth/token`,{method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({grant_type:"refresh_token",refresh_token:refresh,client_secret:secret})
-  });
+    body:JSON.stringify({grant_type:"refresh_token",refresh_token:refresh,client_secret:secret})});
   if(!r.ok) throw new Error(`Auth failed: ${r.status}`);
   return (await r.json()).access_token;
 }
- 
-// Symbol convert
+
 function toDx(sym){
   const m=sym.trim().match(/^(\w+)\s+(\d{6})([CP])(\d+)$/);
   if(!m) return null;
@@ -266,12 +188,10 @@ function toDx(sym){
   const ss=strike===Math.floor(strike)?String(Math.floor(strike)):strike.toFixed(1);
   return `.${u}${e}${t}${ss}`;
 }
- 
-// Fetch positions
+
 async function fetchPositions(account){
   const r=await fetch(`${API}/accounts/${account}/positions`,{
-    headers:{"Authorization":`Bearer ${accessToken}`}
-  });
+    headers:{"Authorization":`Bearer ${accessToken}`}});
   if(!r.ok) throw new Error(`Positions: ${r.status}`);
   const data=await r.json();
   const items=data?.data?.items||[];
@@ -283,10 +203,18 @@ async function fetchPositions(account){
     dir:p["quantity-direction"]==="Long"?1:-1,
   })).filter(p=>p.dx);
   document.getElementById("pl-acct").textContent=account;
+
+  // Fetch used BP
+  try{
+    const br=await fetch(`${API}/accounts/${account}/balances`,{
+      headers:{"Authorization":`Bearer ${accessToken}`}});
+    const bd=await br.json();
+    usedBP=parseFloat(bd?.data?.["used-derivative-buying-power"]||0);
+  }catch(e){console.warn("BP fetch error:",e);}
+
   return positions.map(p=>p.dx);
 }
- 
-// Compute P/L
+
 function computePL(){
   let pl=0,cost=0,n=0;
   for(const p of positions){
@@ -297,80 +225,72 @@ function computePL(){
     n++;
   }
   if(!n) return;
-  plData={pl,pct:cost?(pl/cost)*100:0,n};
+  const absCost=Math.abs(cost);
+  plData={
+    pl,
+    pct: absCost?(pl/absCost)*100:0,
+    bpPct: usedBP?(pl/usedBP)*100:0,
+    n
+  };
   renderPL();
 }
- 
-// Render
+
 function fp(v){return v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
- 
+
 function renderTicker(label){
   const d=prices[label]; if(!d?.price) return;
   const pre=label.toLowerCase();
-  const isVix=label==="VIX";
   const cls=d.chg>0?"pos":d.chg<0?"neg":"neu";
   const arr=d.chg>0?"▲":d.chg<0?"▼":"";
   const sign=d.chg>0?"+":"";
- 
   const elP=document.getElementById(`${pre}-p`);
-  elP.className=`price ${isVix?"vix-color":cls}`;
+  elP.className=`price ${cls}`;
   elP.textContent=fp(d.price);
-  elP.classList.remove("flash"); void elP.offsetWidth; elP.classList.add("flash");
- 
+  elP.classList.remove("flash");void elP.offsetWidth;elP.classList.add("flash");
   const elC=document.getElementById(`${pre}-c`);
   elC.className=`chg ${cls}`;
   elC.textContent=`${arr} ${sign}${fp(d.chg||0)}`;
- 
   const elPct=document.getElementById(`${pre}-pct`);
   elPct.className=`pct ${cls}`;
   elPct.textContent=`${sign}${(d.pct||0).toFixed(2)}%`;
 }
- 
+
 function renderPL(){
-  if(plData.pl==null) return;
-  const{pl,pct,n}=plData;
+  if(!plData.pl && plData.pl!==0) return;
+  const{pl,pct,bpPct,n}=plData;
   const cls=pl>=0?"pos":"neg";
-  const arr=pl>=0?"▲":"▼";
   const sign=pl>=0?"+":"";
   document.getElementById("pl-amt").className=`price ${cls}`;
   document.getElementById("pl-amt").textContent=`${sign}$${fp(pl)}`;
-  document.getElementById("pl-pct").className=`chg ${cls}`;
-  document.getElementById("pl-pct").textContent=`${arr} ${sign}${pct.toFixed(2)}%`;
-  document.getElementById("pl-meta").textContent=`${n} pos`;
+  document.getElementById("pl-prem").className=`pl-row ${cls}`;
+  document.getElementById("pl-prem").textContent=`${sign}${pct.toFixed(2)}%`;
+  document.getElementById("pl-bp").className=`pl-row ${cls}`;
+  document.getElementById("pl-bp").textContent=`${sign}${bpPct.toFixed(2)}%`;
   document.getElementById("pl-card").className=`card pl${pl<0?" neg":""}`;
 }
- 
+
 function setDot(s){document.getElementById("dot").className=`dot ${s}`;}
 function updateFooter(){
   document.getElementById("footer").textContent=
     `Updated: ${new Date().toLocaleTimeString("en-US",{hour12:false})}`;
 }
- 
-// Stream
+
 async function startStream(optSyms){
   if(ws){try{ws.close();}catch{}}
- 
-  const r=await fetch(`${API}/api-quote-tokens`,{
-    headers:{"Authorization":`Bearer ${accessToken}`}
-  });
+  const r=await fetch(`${API}/api-quote-tokens`,{headers:{"Authorization":`Bearer ${accessToken}`}});
   const td=await r.json();
   const stok=td?.data?.token;
   const surl=td?.data?.["dxlink-url"]||"wss://tasty-openapi-ws.dxfeed.com/realtime";
- 
-  const priceSyms=["/ES:XCME","SPX","VIX"];
+  const priceSyms=Object.keys(PRICE_SYMS);
   const allSyms=[...priceSyms,...optSyms];
- 
   ws=new WebSocket(surl);
- 
   ws.onopen=()=>{
     setDot("wait");
     ws.send(JSON.stringify({type:"SETUP",channel:0,version:"0.1",minVersion:"0.1",keepaliveTimeout:60,acceptKeepaliveTimeout:60}));
   };
- 
   ws.onmessage=(e)=>{
     const msg=JSON.parse(e.data);
     const t=msg.type;
- 
     if(t==="AUTH_STATE"&&msg.state==="UNAUTHORIZED"){
       ws.send(JSON.stringify({type:"AUTH",channel:0,token:stok}));
     }
@@ -379,52 +299,34 @@ async function startStream(optSyms){
       ws.send(JSON.stringify({type:"CHANNEL_REQUEST",channel:3,service:"FEED",parameters:{contract:"AUTO"}}));
     }
     else if(t==="CHANNEL_OPENED"&&msg.channel===1){
-      ws.send(JSON.stringify({
-        type:"FEED_SETUP",channel:1,
-        acceptAggregationPeriod:0.5,
-        acceptDataFormat:"COMPACT",
-        acceptEventFields:{Quote:["eventSymbol","bidPrice","askPrice"]}
-      }));
-      ws.send(JSON.stringify({
-        type:"FEED_SUBSCRIPTION",channel:1,reset:true,
-        add:allSyms.map(s=>({type:"Quote",symbol:s}))
-      }));
+      ws.send(JSON.stringify({type:"FEED_SETUP",channel:1,acceptAggregationPeriod:0.5,
+        acceptDataFormat:"COMPACT",acceptEventFields:{Quote:["eventSymbol","bidPrice","askPrice"]}}));
+      ws.send(JSON.stringify({type:"FEED_SUBSCRIPTION",channel:1,reset:true,
+        add:allSyms.map(s=>({type:"Quote",symbol:s}))}));
     }
     else if(t==="CHANNEL_OPENED"&&msg.channel===3){
-      ws.send(JSON.stringify({
-        type:"FEED_SETUP",channel:3,
-        acceptAggregationPeriod:60,
-        acceptDataFormat:"COMPACT",
-        acceptEventFields:{Summary:["eventSymbol","prevDayClosePrice"]}
-      }));
-      ws.send(JSON.stringify({
-        type:"FEED_SUBSCRIPTION",channel:3,reset:true,
-        add:priceSyms.map(s=>({type:"Summary",symbol:s}))
-      }));
+      ws.send(JSON.stringify({type:"FEED_SETUP",channel:3,acceptAggregationPeriod:60,
+        acceptDataFormat:"COMPACT",acceptEventFields:{Summary:["eventSymbol","prevDayClosePrice"]}}));
+      ws.send(JSON.stringify({type:"FEED_SUBSCRIPTION",channel:3,reset:true,
+        add:priceSyms.map(s=>({type:"Summary",symbol:s}))}));
       setDot("ok");
     }
     else if(t==="FEED_DATA"){
       const[evtType,data]=msg.data||[];
       if(!Array.isArray(data)) return;
- 
       if(evtType==="Quote"){
         for(let i=0;i<data.length;i+=3){
           const sym=data[i],bid=data[i+1],ask=data[i+2];
           if(!sym||bid==null||ask==null) continue;
           const mid=(parseFloat(bid)+parseFloat(ask))/2;
           if(!mid||isNaN(mid)||mid<=0) continue;
- 
-          const symMap={"/ES:XCME":"ES","SPX":"SPX","VIX":"VIX"};
-          if(symMap[sym]){
-            const lbl=symMap[sym];
+          if(PRICE_SYMS[sym]){
+            const lbl=PRICE_SYMS[sym];
             const pc=prevClose[lbl];
             prices[lbl]={price:mid,chg:pc?mid-pc:0,pct:pc?((mid-pc)/pc)*100:0};
-            renderTicker(lbl);
-            updateFooter();
+            renderTicker(lbl);updateFooter();
           } else if(sym.startsWith(".")){
-            optMarks[sym]=mid;
-            computePL();
-            updateFooter();
+            optMarks[sym]=mid;computePL();updateFooter();
           }
         }
       }
@@ -432,29 +334,25 @@ async function startStream(optSyms){
         for(let i=0;i<data.length;i+=2){
           const sym=data[i],pc=parseFloat(data[i+1]);
           if(!sym||!pc) continue;
-          const symMap={"/ES:XCME":"ES","SPX":"SPX","VIX":"VIX"};
-          if(symMap[sym]) prevClose[symMap[sym]]=pc;
+          if(PRICE_SYMS[sym]) prevClose[PRICE_SYMS[sym]]=pc;
         }
       }
     }
-    else if(t==="KEEPALIVE"){
-      ws.send(JSON.stringify({type:"KEEPALIVE",channel:0}));
-    }
+    else if(t==="KEEPALIVE"){ws.send(JSON.stringify({type:"KEEPALIVE",channel:0}));}
   };
- 
   ws.onerror=()=>setDot("error");
-  ws.onclose=()=>{ setDot("error"); setTimeout(reconnect,8000); };
+  ws.onclose=()=>{setDot("error");setTimeout(reconnect,8000);};
 }
- 
+
 async function reconnect(){
   if(!creds) return;
   try{
     accessToken=await getToken(creds.secret,creds.token);
     const optSyms=await fetchPositions(creds.account);
     await startStream(optSyms);
-  }catch(e){ console.error("Reconnect:",e); setTimeout(reconnect,15000); }
+  }catch(e){console.error("Reconnect:",e);setTimeout(reconnect,15000);}
 }
- 
+
 async function connect(){
   const secret=document.getElementById("i-secret").value.trim();
   const token=document.getElementById("i-token").value.trim();
@@ -462,38 +360,34 @@ async function connect(){
   const errEl=document.getElementById("err");
   const spin=document.getElementById("spin");
   if(!secret||!token||!account){errEl.textContent="Semua field wajib diisi";return;}
-  errEl.textContent=""; spin.style.display="block";
+  errEl.textContent="";spin.style.display="block";
   try{
     accessToken=await getToken(secret,token);
-    creds={secret,token,account};
-    save(creds);
+    creds={secret,token,account};save(creds);
     const optSyms=await fetchPositions(account);
     await startStream(optSyms);
     if(posTimer) clearInterval(posTimer);
     posTimer=setInterval(async()=>{
-      try{ const syms=await fetchPositions(account);
-        if(ws?.readyState===1) ws.send(JSON.stringify({type:"FEED_SUBSCRIPTION",channel:1,reset:false,add:syms.map(s=>({type:"Quote",symbol:s}))}));
+      try{
+        const syms=await fetchPositions(account);
+        if(ws?.readyState===1) ws.send(JSON.stringify({type:"FEED_SUBSCRIPTION",channel:1,reset:false,
+          add:syms.map(s=>({type:"Quote",symbol:s}))}));
       }catch(e){console.warn("Pos refresh:",e);}
     },5*60*1000);
     document.getElementById("overlay").classList.add("hidden");
-  }catch(e){
-    errEl.textContent=`Error: ${e.message}`;
-    setDot("error");
-  }finally{ spin.style.display="none"; }
+  }catch(e){errEl.textContent=`Error: ${e.message}`;setDot("error");}
+  finally{spin.style.display="none";}
 }
- 
+
 function logout(){
-  clear();
-  if(ws) ws.close();
-  if(posTimer) clearInterval(posTimer);
-  creds=null; accessToken=null;
+  clear();if(ws) ws.close();if(posTimer) clearInterval(posTimer);
+  creds=null;accessToken=null;
   document.getElementById("overlay").classList.remove("hidden");
   setDot("wait");
 }
- 
+
 window.addEventListener("load",async()=>{
-  const saved=load();
-  if(!saved) return;
+  const saved=load();if(!saved) return;
   creds=saved;
   document.getElementById("i-secret").value=saved.secret;
   document.getElementById("i-token").value=saved.token;
@@ -505,7 +399,7 @@ window.addEventListener("load",async()=>{
     document.getElementById("overlay").classList.add("hidden");
     if(posTimer) clearInterval(posTimer);
     posTimer=setInterval(async()=>{try{await fetchPositions(saved.account);}catch{}},5*60*1000);
-  }catch(e){ console.error("Auto-connect:",e); setDot("error"); }
+  }catch(e){console.error("Auto-connect:",e);setDot("error");}
 });
 </script>
 </body>
