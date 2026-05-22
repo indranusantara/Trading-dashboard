@@ -25,7 +25,7 @@
   .dot.error{background:var(--red);box-shadow:0 0 6px var(--red);}
   .dot.wait{background:#ffa000;box-shadow:0 0 6px #ffa000;animation:pulse 1s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .main{flex:1;display:grid;grid-template-rows:1fr 1fr 1fr 1fr;gap:1px;background:var(--border);overflow:hidden;}
+  .main{flex:1;display:grid;grid-template-rows:1fr 1fr 1fr;gap:1px;background:var(--border);overflow:hidden;}
   .card{background:var(--panel);display:grid;grid-template-columns:1fr auto;
     padding:6px 12px;position:relative;overflow:hidden;align-items:center;gap:0 12px;}
   .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
@@ -120,17 +120,7 @@
       <span class="pct neu" id="es-pct">—</span>
     </div>
   </div>
-  <!-- /VX -->
-  <div class="card vx">
-    <div class="card-left">
-      <div class="label" style="color:var(--vx)">/VX</div>
-      <div class="price neu" id="vx-p"><span class="wait-txt">—</span></div>
-    </div>
-    <div class="card-right">
-      <span class="chg neu" id="vx-c">—</span>
-      <span class="pct neu" id="vx-pct">—</span>
-    </div>
-  </div>
+
   <!-- P/L -->
   <div class="card pl" id="pl-card">
     <div class="card-left">
@@ -155,12 +145,12 @@
 const API="https://api.tastyworks.com";
 let creds=null,accessToken=null,ws=null;
 let positions=[],optMarks={},prevClose={};
-let prices={SPX:{},ES:{},VX:{}};
+let prices={SPX:{},ES:{}};
 let plData={},usedBP=0;
 let posTimer=null;
 
 // Symbol map — /VX:XCFE for VIX futures
-const PRICE_SYMS={"/ES:XCME":"ES","SPX":"SPX","/VX:XCFE":"VX"};
+const PRICE_SYMS={"/ES:XCME":"ES","SPX":"SPX"};
 
 setInterval(()=>{
   document.getElementById("clock").textContent=
